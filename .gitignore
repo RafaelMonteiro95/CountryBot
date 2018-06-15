@@ -106,3 +106,4 @@ venv.bak/
 # Custom
 corpus/
 doc/
+src/grammar.fcfg

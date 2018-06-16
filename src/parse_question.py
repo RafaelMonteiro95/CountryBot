@@ -53,6 +53,46 @@ pt_model = spacy.load('pt')
 # pergunta = u"Quem é o presidente do Brasil?"
 # doc = pt_model(pergunta)
 
+
+
+class ParsedQuestion():
+
+	def __init__(self, question, pron=None, country=None, topic=None):
+
+		self.pergunta = question
+		self.pergunta_canon = text_canonicalize(question)
+		self.pron = pron
+		self.country = country
+		self.topic = topic
+		self.expected = EXPECTED_ANSWER[pron] if pron else None
+
+	def __repr__(self):
+		s = "Pergunta: " + self.pergunta + '\n'
+		s += "Pronome: " + self.pron + '\n'
+		s += "País: " + self.country + '\n'
+		s += "Topico: " + str(self.topic) + '\n'
+		s += "Tipo de resposta: " + str(self.expected) + '\n'
+		return s
+
+	def __str__(self):
+		return self.__repr__
+
+	def __hash__(self):
+		return self.pergunta.__hash__()
+
+	def __cmp__(self, other):
+		return self.pergunta == other.pergunta
+	
+	# def __getitem__(self, i):
+	# 	return self.__dict__[self.__dict__.keys[i]]
+	
+	# def __setitem__(self, i, value):
+	# 	self.__dict__[self.__dict__.keys[i]] = value
+
+	# def __delitem__(self, i):
+	# 	del self.pergunta[i]
+
+
 def _find_pron(doc):
 
 	# NOTE: talvez precisemos verificar advérbios, é possível que alguns pronomes 
@@ -75,11 +115,12 @@ def _find_pron(doc):
 		raise ChatbotException(e, err_msg, doc.text)
 
 	except Exception as e:
-		err_msg = "[Error] Pronome encontrado ('%s') não está na lista de pronomes suportados." % pron
+		err_msg = "[Error] Pronome encontrado ('{0}') não está na lista de pronomes suportados.".format(pron)
 		print(err_msg)
 		raise ChatbotException(e, err_msg, doc.text)
 
 	return pron
+
 
 
 def _find_nouns(doc):
@@ -91,6 +132,7 @@ def _find_nouns(doc):
 
 def _find_abbreviations(doc):
 	return [abbv.text for abbv in doc if abbv.text.isupper()]
+
 
 def _find_country(doc):
 
@@ -128,17 +170,16 @@ def _find_country(doc):
 		raise ChatbotException(e, err_msg, doc.text)
 	
 	except Exception as e:
-		err_msg = "[Error] País '%s' desconhecido." % propn
+		err_msg = "[Error] País '{0}' desconhecido.".format(propn)
 		print(err_msg)
 		raise ChatbotException(e, err_msg, doc.text)
 
 	return propn
 
 
-def parse_question(question, pron=None, country=None, model=pt_model):
+# Class's static methods
 
-	_question = question
-	question = text_canonicalize(_question)
+def parse_question(question, pron=None, country=None, model=pt_model):
 
 	doc = model(question)
 
@@ -149,14 +190,7 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 	topic = nouns + " " + "".join(abbrvs)
 	# topic = topic + " " + country
 
-	return {
-		"pergunta": _question,
-		"pergunta_canon": question,
-		"pron": pron,
-		"country": country,
-		"topic": topic,
-		"expected": EXPECTED_ANSWER[pron]
-	}
+	return ParsedQuestion(question, pron, country, topic)
 
 
 def text_canonicalize(question):
@@ -170,6 +204,7 @@ def text_canonicalize(question):
 	question = re.sub("[çÇ]", "c", question)
 	question = re.sub("[ñ]", "n", question)
 	return question
+
 
 def test(path="../perguntas.txt", debug=False):
 
@@ -185,9 +220,12 @@ def test(path="../perguntas.txt", debug=False):
 			res.append(parse_question(line))
 
 		except ChatbotException as e:
-			res.append({"err_msg": "Erro na pergunta '%s'" % line, "exception": e})
+			res.append({
+				"err_msg": "Erro na pergunta '{0}'".format(line), 
+				"exception": e
+				})
 
 		except Exception as e:
-			print("Unknown error occured. Error msg: '%s'." % str(e))
+			print("Unknown error occured. Error msg: '{0}'.".format(str(e)))
 
 	return res

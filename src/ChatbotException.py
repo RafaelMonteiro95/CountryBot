@@ -1,4 +1,5 @@
 import sys
+from parse_question import text_canonicalize
 
 class ChatbotException(Exception):
 
@@ -7,9 +8,13 @@ class ChatbotException(Exception):
 		self.e = e
 		self.msg = msg
 		self.question = question
+		self.canon_question = text_canonicalize(question)
 		self.pron = pron
 		self.country = country
 
 	def __repr__(self):
-		s = "%s in question '%s'.\n" % self.msg, self.question
+		s = "{0} in question '{1}'.\n".format(self.msg, self.question)
 		return s + str(self.e)
+
+	def __str__(self):
+		return self.__repr__()

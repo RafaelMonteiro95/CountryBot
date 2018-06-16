@@ -24,21 +24,20 @@ from ChatbotException import ChatbotException
 # No accents and all lowercase list
 COUNTRY_LIST = ['china', 'brasil', 'russia', 'japao', 'mexico', 'egito', 'italia', 'nova zelandia', 'somalia', 'estados unidos', 'franca', 'australia', 'reino unido', 'paises constituintes', 'india', 'indonesia', 'paquistao', 'nigeria', 'bangladesh', 'filipinas', 'vietna', 'etiopia', 'alemanha', 'irao', 'turquia', 'tailandia', 'africa do sul', 'myanmar', 'tanzania', 'coreia do sul', 'colombia', 'espanha', 'quenia', 'argentina', 'ucrania', 'argelia', 'polonia', 'sudao', 'iraque', 'canada', 'uganda', 'marrocos', 'arabia saudita', 'peru', 'uzbequistao', 'malasia', 'venezuela', 'nepal', 'gana', 'afeganistao', 'iemen', 'mocambique', 'coreia do norte', 'angola', 'siria', 'camaroes', 'costa do marfim', 'madagascar', 'sri lanka', 'romenia', 'niger', 'burkina faso', 'chile', 'mali', 'cazaquistao', 'malawi', 'guatemala', 'equador', 'zambia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudao do sul', 'bolivia', 'ruanda', 'belgica', 'cuba', 'tunisia', 'haiti', 'grecia', 'guine', 'checa', 'dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suecia', 'azerbaijao', 'bielorrussia', 'emirados arabes unidos', 'honduras', 'austria', 'israel', 'tajiquistao', 'suica', 'jordania', 'papua-nova guine', 'togo', 'hong kong', 'bulgaria', 'servia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'libia', 'nicaragua', 'quirguistao', 'dinamarca', 'singapura', 'eslovaquia', 'eritreia', 'centro-africana', 'costa rica', 'turquemenistao', 'territorios palestinos', 'irlanda', 'do congo', 'liberia', 'oman', 'croacia', 'libano', 'puntlandia', 'bosnia e herzegovina', 'panama', 'georgia', 'mauritania', 'moldavia', 'porto rico', 'somalilandia', 'uruguai', 'kuwait', 'mongolia', 'armenia', 'lituania', 'albania', 'jamaica', 'namibia', 'lesoto', 'catar', 'botswana', 'eslovenia', 'letonia', 'gambia', 'guine-bissau', 'kosovo', 'gabao', 'bahrein', 'trinidad e tobago', 'estonia', 'mauricia', 'guine equatorial', 'timor-leste', 'suazilandia', 'djibouti', 'fiji', 'chipre', 'comores', 'butao', 'guiana', 'macau', 'montenegro', 'ilhas salomao', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnistria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islandia', 'barbados', 'nova caledonia', 'polinesia francesa', 'vanuatu', 'abecasia', 'guiana francesa', 'mayotte', 'santa lucia', 'guam', 'curacao', 'nagorno-karabakh', 'sao vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'dominica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelandia', 'ilhas cayman', 'marianas setentrionais', 'ossetia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'monaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlandia', 'ilhas virgens britanicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'sao pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn']
 
+# Lista de verbos de cópular (ligação)
+VCOP_LIST = ["ser", "estar", "permanecer", "ficar", "tornar", "andar", "parecer", "virar", "continuar", "viver"]
+
 # Pronoun list
 PRONOUNS = ['quem', 'como', 'qual', 'quais', 'quando', 'quanto', 'quantos', 'quantas', 'onde', 'por que', 'por quê', 'que']
 EXPECTED_ANSWER = {
 	
-	# TODO: adicionar campo do preposições e nomes para INVALIDAR
 	'quem': {
 		'regra': ['PREP', 'PROPN'],
-		'PREP': ['por', 'para'],
+		'PREP': None,
+		'INV_PREP': ['por', 'para'],
 		'PROPN': {}
 	},
 
-	'como': '',
-	'qual': '',
-	'quais': '',
-	
 	# TODO: usar Rule-Base Matching para identificar datas por exemplo 
 	# 13/12/1996 ou 13.12.1996. Datas no formato 13 de dezembro de 1996 já é 
 	# reconhecido como o padrão NUM de NOUM de NUM<year>
@@ -51,12 +50,19 @@ EXPECTED_ANSWER = {
 	'onde': {
 		'regra': ['PREP', 'PROPN'],
 		'PREP': ['em', 'no', 'na'],
+		'INV_PREP': None,
 		'PROPN': {}
 	},
 
 	'por que': '',
 	'por quê': '',
-	'que': ''
+	'porque': '',
+	'porquê': '',
+
+	'que': '',
+	'como': '',
+	'qual': '',
+	'quais': '',
 }
 
 
@@ -75,16 +81,19 @@ class ParsedQuestion():
 		self.pergunta = question
 		self.pergunta_canon = text_canonicalize(question)
 		self.pron = pron
+		self.pron_lower = pron.lower() if pron else None
 		self.country = country
 		self.topic = topic
-		self.expected = EXPECTED_ANSWER[pron] if pron else None
+		self.expected = EXPECTED_ANSWER[self.pron_lower] if pron else None
 
 	def __repr__(self):
-		s = "Pergunta: {0}\n".format(self.pergunta)
+		s = "\n\nPergunta: {0}\n".format(self.pergunta)
 		s += "Pronome: {0}\n".format(self.pron if self.pron else "none")
 		s += "País: {0}\n".format(self.country if self.country else "none")
 		s += "Topico: {0}\n".format(str(self.topic))
 		s += "Tipo de resposta: {0}\n".format(str(self.expected))
+		s += "Possível query: '{0}'".format(text_canonicalize(str(self.topic) + " " + str(self.country)))
+
 		return s
 
 	def __unicode__(self):
@@ -106,33 +115,25 @@ def _find_pron(doc):
 	# Find all pronouns
 	prons = [word for word in doc if word.pos_ == 'PRON']
 
-	# print()
-	# print("Prons: " + str(prons))
-
 	# Assume that the first pronoun is relative to our question
 	for word in prons:
 		# print("Checking word '{0}'".format(word.lower_))
 		if word.lower_ in PRONOUNS:
-			return word.lower_ # Pronoun was found!
+			return word.text # Pronoun was found!
 	
 	# No pronoun found, maybe it was wrongly classified. Search in adverbs
 	advs = [word for word in doc if word.pos_ == 'ADV']
-	# print("Advs: " + str(advs))
 
 	# Search for word in valid pronouns list
 	for word in advs:
-		# print("Checking word '{0}'".format(word.lower_))
 		if word.pos_ in PRONOUNS:
-			return word.lower_ # Pronoun was found!
+			return word.text # Pronoun was found!
 	
 	# Still no pronoun found, brute force it
-	# print("Brute forcing")
 	for word in doc:
-		# print("Checking word '{0}'".format(word.lower_))
 		if word.lower_ in PRONOUNS:
-			return word.lower_
+			return word.text
 
-	# print("Not found :c\n")
 	# If it still wasnt found, we dont have a valid pronoun
 	if not pron:
 		err_msg = "[Error] Nenhum pronome encontrado na pergunta."
@@ -141,17 +142,6 @@ def _find_pron(doc):
 
 	# Not found
 	return None
-
-
-def _find_nouns(doc):
-
-	# Process nouns - try to find the question's topic
-	nouns = [word for word in doc if word.pos_ == 'NOUN']
-	return " ".join([word.lower_ for word in nouns])
-
-
-def _find_abbreviations(doc):
-	return [abbv.text for abbv in doc if abbv.text.isupper()]
 
 
 def _find_country(doc):
@@ -176,7 +166,7 @@ def _find_country(doc):
 			
 			for word in doc:
 				if word.lower_ in COUNTRY_LIST:
-					return word.lower_
+					return word.text
 
 	except IndexError as e:
 		err_msg = "[Error] Nenhum país encontrado na pergunta."
@@ -191,7 +181,52 @@ def _find_country(doc):
 	# Not found
 	return None
 
+# These are used to compose TOPIC
+def _find_nouns(doc):
 
+	# Process nouns - try to find the question's topic
+	nouns = [word for word in doc if word.pos_ == 'NOUN']
+	return " ".join([word.lower_ for word in nouns])
+
+def _find_adjs(doc):
+
+	# Process adjectives - try to find the question's topic
+	adjs = [word for word in doc if word.pos_ == 'ADJ']
+	return " ".join([word.lower_ for word in adjs])
+
+def _find_verbs(doc, exclude_cop=True):
+
+	# Process verbs
+	verbs = [word for word in doc if word.pos_ == 'VERB']
+					
+	# Filter out cop verbs if not explicity asked since they dont bring
+	# information by themselves
+	if exclude_cop:
+		verbs = [word for word in verbs if not word.lemma_ in VCOP_LIST]
+
+	return " ".join([word.lower_ for word in verbs])
+
+def _find_abbreviations(doc):
+	return [abbv.text for abbv in doc if abbv.text.isupper()]
+
+def _find_leftovers(doc):
+
+	# Process the rest of the tagset - try to find the question's topic
+	left = [word for word in doc if word.pos_ == 'SYM']
+	return " ".join([word.lower_ for word in left])
+
+# Shorthand for calling each find and concatenating their results
+def _find_topic(doc, exclude_cop=True):
+
+	topic = _find_verbs(doc, exclude_cop=True) + " " + \
+			_find_nouns(doc) + " " + \
+			_find_leftovers(doc) + " " + \
+			_find_adjs(doc) + " " + \
+			" ".join(_find_abbreviations(doc))
+
+	return topic.strip()
+
+# To find places or people's names
 def _find_proper_nouns(doc):
 	pass
 
@@ -211,23 +246,33 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 		except: country = None
 	
 	abbrvs = _find_abbreviations(doc)
-	nouns = _find_nouns(doc)
-	topic = nouns + " " + " ".join(abbrvs)
-	# topic = topic + " " + country
+	topic = _find_topic(doc)
 
 	return ParsedQuestion(question, pron, country, topic)
 
 
+# Compiled regexes for canincalizing text
+regex = [ re.compile("[áàâãäåÁÀÂÃÄÅ]"),
+	re.compile("[éèêẽëÉÈÊẼË]"),
+	re.compile("[íìîĩïÍÌÎĨÏ]"),
+	re.compile("[óòôõöÓÒÔÕÖ]"),
+	re.compile("[úùûũüÜÚÙÛŨ]"),
+	re.compile("[ýỳŷỹÿÝỲŶỸŸ]"),
+	re.compile("[çÇ]"),
+	re.compile("[ñ]"),
+	re.compile("\\s+"),
+]
 def text_canonicalize(question):
 
-	question = re.sub("[áàâãäåÁÀÂÃÄÅ]", "a", question)
-	question = re.sub("[éèêẽëÉÈÊẼË]", "e", question)
-	question = re.sub("[íìîĩïÍÌÎĨÏ]", "i", question)
-	question = re.sub("[óòôõöÓÒÔÕÖ]", "o", question)
-	question = re.sub("[úùûũüÜÚÙÛŨ]", "u", question)
-	question = re.sub("[ýỳŷỹÿÝỲŶỸŸ]", "y", question)
-	question = re.sub("[çÇ]", "c", question)
-	question = re.sub("[ñ]", "n", question)
+	question = re.sub(regex[0], "a", question)
+	question = re.sub(regex[1], "e", question)
+	question = re.sub(regex[2], "i", question)
+	question = re.sub(regex[3], "o", question)
+	question = re.sub(regex[4], "u", question)
+	question = re.sub(regex[5], "y", question)
+	question = re.sub(regex[6], "c", question)
+	question = re.sub(regex[7], "n", question)
+	question = re.sub(regex[8], " ", question)
 	return question
 
 
@@ -250,7 +295,7 @@ def test(path="../perguntas.txt", debug=False):
 				"err_msg": "Erro na pergunta '{0}'".format(line), 
 				"exception": e,
 				"index": counter
-				})
+			})
 
 		except Exception as e:
 			print("Unknown error occured. Error msg: '{0}'.".format(repr(e)))
@@ -261,7 +306,7 @@ def test(path="../perguntas.txt", debug=False):
 
 	return res
 
-def get_lists(res):
+def _get_lists(res):
 
 	no_pron = [r for r in res if not r.pron]
 	no_country = [r for r in res if not r.country]

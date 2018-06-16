@@ -1,12 +1,11 @@
 ##############################################
-# Processamento de Linguagem Natural         #
-# SCC0633                                    #
+# Processamento de Linguagem Natural SCC0633 #
 # General countries Chatbot main source file #
 #                                            #
 # Giovanna Oliveira Guimarães   9293693      #
 # Lucas Alexandre Soares        9293265      #
 # Rafael Joegs Monteiro         9293095      #
-# Darlan Xavier                 XXX          #
+# Darlan Xavier Nascimento      10867851     #
 #                                            #
 ##############################################
 
@@ -26,16 +25,17 @@ UNKNOWN_COUNTRY_ANSWERS = ["Desculpe, não reconheço este país\n"]
 ASK_AGAIN = ["Você pode tentar me dizer outro país ou pedir para refazer a pergunta.\n"]
 CONFIRM_COUNTRY = ["Você ainda está falando do país {0}?\n"]
 CONFIRM_TOPIC = ["Você ainda está falando sobre {0}?\n"]
+NO_ANSWER = ["Desculpa, não sei responder a sua pergunta.\n"]
 
 # NOTE: chatbot should be a class or simply a method?
 def StartChatbot():
 	
 	name = input(random.choice(GREETINGS))
 	chatting = True
-	print("Bom dia {0}, pode começar a perguntar!\n".format(name))
-	
 	topic_mem = ''
 	country_mem = ''
+
+	question_msg = "Bom dia {0}, pode começar a perguntar!\n".format(name)
 
 	# Keep talking
 	while(chatting):
@@ -43,6 +43,7 @@ def StartChatbot():
 		abort_question = False
 
 		# Ask question
+		print(question_msg)
 		question = input()
 		parsed = parse_question(question)
 
@@ -70,16 +71,28 @@ def StartChatbot():
 					("refazer" in _country and "pergunta" in _country):
 					abort_question = True
 
+		print("[Debug]: Parsed question:\n")
+		print(parsed)
+		print()
+		question_msg = "Próxima pergunta!" # probably temporary
+
 		#Topic and country memory will be used for more fluid and realistic chat
 		topic_mem = parsed.topic
 		country_mem = parsed.country
 
-		print("[Debug]: Parsed question:\n")
-		print(parsed)
-		print()
-		print("Próxima pergunta!")
+		# Question was successfuly parsed, try to find the answer
+		# answer = find_answer()
+		answer = None
 
+		if answer:
+			# print(compose_answer(question, answer))
+			pass
+		else:
+			print(random.choice(NO_ANSWER))
+
+	# Say goodbye!
 	print(random.choice(FAREWELLS))
+	return
 
 
 if __name__ == "__main__":

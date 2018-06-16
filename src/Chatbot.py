@@ -17,7 +17,7 @@ get_html = google.get_html()
 
 from parse_question import parse_question, text_canonicalize
 from parse_question import COUNTRY_LIST
-# from compose_answer import XXX
+# from compose_answer import XXX nome do module de criação de respostas
 # from XXX import XXX -- NOTE: this is for getting answer for external source - DEPS: Joegs
 from ChatbotException import ChatbotException
 
@@ -31,6 +31,8 @@ CONFIRM_COUNTRY = ["Você ainda está falando do país {0}?\n"]
 CONFIRM_TOPIC = ["Você ainda está falando sobre {0}?\n"]
 NO_ANSWER = ["Desculpa, não sei responder a sua pergunta.\n"]
 
+
+index_mundi_base_url = "https://indexmundi.com/pt/"
 
 # NOTE: chatbot should be a class or simply a method?
 def StartChatbot():
@@ -75,6 +77,9 @@ def StartChatbot():
 					("trocar" in _country and "pergunta" in _country) or 	\
 					("refazer" in _country and "pergunta" in _country):
 					abort_question = True
+
+		if _country == 'usa' or _country == 'eua':
+			parse_question.country = 'estados unidos'
 
 		# Go to next iteration to ask for next question
 		if abort_question: 

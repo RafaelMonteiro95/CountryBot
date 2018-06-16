@@ -35,7 +35,7 @@ def StartChatbot():
 	topic_mem = ''
 	country_mem = ''
 
-	question_msg = "Bom dia {0}, pode começar a perguntar!\n".format(name)
+	question_msg = "Bom dia, {0}, pode começar a perguntar!\n".format(name)
 
 	# Keep talking
 	while(chatting):
@@ -64,13 +64,18 @@ def StartChatbot():
 			country = input()
 			_country = country.lower()
 			
-			if _country in COUNTRY_LIST: parsed.country = country
-			elif 	("outra" in _country and "pergunta" in _country or)
-					("mudar" in _country and "pergunta" in _country or)
-					("trocar" in _country and "pergunta" in _country or)
+			if _country in COUNTRY_LIST: parsed.country = _country
+			elif 	("outra" in _country and "pergunta" in _country) or 	\
+					("mudar" in _country and "pergunta" in _country) or 	\
+					("trocar" in _country and "pergunta" in _country) or 	\
 					("refazer" in _country and "pergunta" in _country):
 					abort_question = True
 
+		# Go to next iteration to ask for next question
+		if abort_question: 
+			question_msg = "Ok, vamos mudar a pergunta." # probably temporary
+			continue
+		
 		print("[Debug]: Parsed question:\n")
 		print(parsed)
 		print()
@@ -88,7 +93,8 @@ def StartChatbot():
 			# print(compose_answer(question, answer))
 			pass
 		else:
-			print(random.choice(NO_ANSWER))
+			print("Ainda não implementado")
+			# print(random.choice(NO_ANSWER))
 
 	# Say goodbye!
 	print(random.choice(FAREWELLS))

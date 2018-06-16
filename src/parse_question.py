@@ -14,7 +14,7 @@ import sys
 import re
 import spacy
 
-from ChatbotException import ChatbotException
+import ChatbotException as CE
 
 # Countries list
 # Default list
@@ -87,7 +87,7 @@ class ParsedQuestion():
 		self.expected = EXPECTED_ANSWER[self.pron_lower] if pron else None
 
 	def __repr__(self):
-		s = "\n\nPergunta: {0}\n".format(self.pergunta)
+		s = "Pergunta: {0}\n".format(self.pergunta)
 		s += "Pronome: {0}\n".format(self.pron if self.pron else "none")
 		s += "País: {0}\n".format(self.country if self.country else "none")
 		s += "Topico: {0}\n".format(str(self.topic))
@@ -96,11 +96,14 @@ class ParsedQuestion():
 
 		return s
 
+	# TODO: check unicode override
 	def __unicode__(self):
 		return self.pergunta
 
 	def __str__(self):
-		return unicode(self).encode('utf-8')
+		return self.__repr__()
+		# TODO: check unicode function
+		# return unicode(self).encode('utf-8') 
 
 	def __hash__(self):
 		return self.pergunta.__hash__()
@@ -138,7 +141,7 @@ def _find_pron(doc):
 	if not pron:
 		err_msg = "[Error] Nenhum pronome encontrado na pergunta."
 		print(err_msg)
-		raise ChatbotException(msg=err_msg, question=doc.text)
+		raise CE.ChatbotException(msg=err_msg, question=doc.text)
 
 	# Not found
 	return None
@@ -171,12 +174,12 @@ def _find_country(doc):
 	except IndexError as e:
 		err_msg = "[Error] Nenhum país encontrado na pergunta."
 		print(err_msg)
-		raise ChatbotException(e, err_msg, doc.text)
+		raise CE.ChatbotException(e, err_msg, doc.text)
 	
 	except Exception as e:
 		err_msg = "[Error] País '{0}' desconhecido.".format(propn)
 		print(err_msg)
-		raise ChatbotException(e, err_msg, doc.text)
+		raise CE.ChatbotException(e, err_msg, doc.text)
 
 	# Not found
 	return None
@@ -290,7 +293,7 @@ def test(path="../perguntas.txt", debug=False):
 			if debug: print(line)
 			res.append(parse_question(line))
 
-		except ChatbotException as e:
+		except CE.ChatbotException as e:
 			res.append({
 				"err_msg": "Erro na pergunta '{0}'".format(line), 
 				"exception": e,

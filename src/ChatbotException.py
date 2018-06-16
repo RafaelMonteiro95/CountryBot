@@ -11,7 +11,7 @@
 ##############################################
 
 import sys
-from parse_question import text_canonicalize
+import parse_question
 
 class ChatbotException(Exception):
 
@@ -20,7 +20,7 @@ class ChatbotException(Exception):
 		self.e = e
 		self.msg = msg
 		self.question = question
-		self.canon_question = text_canonicalize(question)
+		self.canon_question = parse_question.text_canonicalize(question)
 		self.pron = pron
 		self.country = country
 
@@ -29,8 +29,11 @@ class ChatbotException(Exception):
 		return s + repr(self.e)
 
 
+	# TODO: check unicode override
 	def __unicode__(self):
 		return self.__repr__()
 
 	def __str__(self):
-		return unicode(self).encode('utf-8')
+		return self.__repr__()
+		# TODO: check unicode function
+		# return unicode(self).encode('utf-8')

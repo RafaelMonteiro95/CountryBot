@@ -10,10 +10,10 @@ from ChatbotException import ChatbotException
 # Lower case list
 # COUNTRY_LIST = ['china', 'brasil', 'rússia', 'japão', 'méxico', 'egito', 'itália', 'nova zelândia', 'somália', 'estados unidos', 'frança', 'austrália', 'reino unido', 'países constituintes', 'índia', 'indonésia', 'paquistão', 'nigéria', 'bangladesh', 'filipinas', 'vietnã', 'etiópia', 'alemanha', 'irão', 'turquia', 'tailândia', 'áfrica do sul', 'myanmar', 'tanzânia', 'coreia do sul', 'colômbia', 'espanha', 'quénia', 'argentina', 'ucrânia', 'argélia', 'polónia', 'sudão', 'iraque', 'canadá', 'uganda', 'marrocos', 'arábia saudita', 'peru', 'uzbequistão', 'malásia', 'venezuela', 'nepal', 'gana', 'afeganistão', 'iémen', 'moçambique', 'coreia do norte', 'angola', 'síria', 'camarões', 'costa do marfim', 'madagáscar', 'sri lanka', 'roménia', 'níger', 'burkina faso', 'chile', 'mali', 'cazaquistão', 'malawi', 'guatemala', 'equador', 'zâmbia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudão do sul', 'bolívia', 'ruanda', 'bélgica', 'cuba', 'tunísia', 'haiti', 'grécia', 'guiné', 'república checa', 'república dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suécia', 'azerbaijão', 'bielorrússia', 'emirados árabes unidos', 'honduras', 'áustria', 'israel', 'tajiquistão', 'suíça', 'jordânia', 'papua-nova guiné', 'togo', 'hong kong', 'bulgária', 'sérvia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'líbia', 'nicarágua', 'quirguistão', 'dinamarca', 'singapura', 'eslováquia', 'eritreia', 'república centro-africana', 'costa rica', 'turquemenistão', 'territórios palestinos', 'república da irlanda', 'república do congo', 'libéria', 'oman', 'croácia', 'líbano', 'puntlândia', 'bósnia e herzegovina', 'panamá', 'geórgia', 'mauritânia', 'moldávia', 'porto rico', 'somalilândia', 'uruguai', 'kuwait', 'mongólia', 'arménia', 'lituânia', 'albânia', 'jamaica', 'namíbia', 'lesoto', 'catar', 'botswana', 'eslovénia', 'letónia', 'gâmbia', 'guiné-bissau', 'kosovo', 'gabão', 'bahrein', 'trinidad e tobago', 'estónia', 'maurícia', 'guiné equatorial', 'timor-leste', 'suazilândia', 'djibouti', 'fiji', 'chipre', 'comores', 'butão', 'guiana', 'macau', 'montenegro', 'ilhas salomão', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnístria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islândia', 'barbados', 'nova caledônia', 'polinésia francesa', 'vanuatu', 'abecásia', 'guiana francesa', 'mayotte', 'santa lúcia', 'guam', 'curaçao', 'nagorno-karabakh', 'são vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'domínica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelândia', 'ilhas cayman', 'marianas setentrionais', 'ossétia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'mónaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlândia', 'ilhas virgens britânicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'são pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn']
 # No accents and all lowercase list
-COUNTRY_LIST = ['china', 'brasil', 'russia', 'japao', 'mexico', 'egito', 'italia', 'nova zelandia', 'somalia', 'estados unidos', 'franca', 'australia', 'reino unido', 'paises constituintes', 'india', 'indonesia', 'paquistao', 'nigeria', 'bangladesh', 'filipinas', 'vietna', 'etiopia', 'alemanha', 'irao', 'turquia', 'tailandia', 'africa do sul', 'myanmar', 'tanzania', 'coreia do sul', 'colombia', 'espanha', 'quenia', 'argentina', 'ucrania', 'argelia', 'polonia', 'sudao', 'iraque', 'canada', 'uganda', 'marrocos', 'arabia saudita', 'peru', 'uzbequistao', 'malasia', 'venezuela', 'nepal', 'gana', 'afeganistao', 'iemen', 'mocambique', 'coreia do norte', 'angola', 'siria', 'camaroes', 'costa do marfim', 'madagascar', 'sri lanka', 'romenia', 'niger', 'burkina faso', 'chile', 'mali', 'cazaquistao', 'malawi', 'guatemala', 'equador', 'zambia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudao do sul', 'bolivia', 'ruanda', 'belgica', 'cuba', 'tunisia', 'haiti', 'grecia', 'guine', 'checa', 'dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suecia', 'azerbaijao', 'bielorrussia', 'emirados arabes unidos', 'honduras', 'austria', 'israel', 'tajiquistao', 'suica', 'jordania', 'papua-nova guine', 'togo', 'hong kong', 'bulgaria', 'servia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'libia', 'nicaragua', 'quirguistao', 'dinamarca', 'singapura', 'eslovaquia', 'eritreia', 'centro-africana', 'costa rica', 'turquemenistao', 'territorios palestinos', 'da irlanda', 'do congo', 'liberia', 'oman', 'croacia', 'libano', 'puntlandia', 'bosnia e herzegovina', 'panama', 'georgia', 'mauritania', 'moldavia', 'porto rico', 'somalilandia', 'uruguai', 'kuwait', 'mongolia', 'armenia', 'lituania', 'albania', 'jamaica', 'namibia', 'lesoto', 'catar', 'botswana', 'eslovenia', 'letonia', 'gambia', 'guine-bissau', 'kosovo', 'gabao', 'bahrein', 'trinidad e tobago', 'estonia', 'mauricia', 'guine equatorial', 'timor-leste', 'suazilandia', 'djibouti', 'fiji', 'chipre', 'comores', 'butao', 'guiana', 'macau', 'montenegro', 'ilhas salomao', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnistria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islandia', 'barbados', 'nova caledonia', 'polinesia francesa', 'vanuatu', 'abecasia', 'guiana francesa', 'mayotte', 'santa lucia', 'guam', 'curacao', 'nagorno-karabakh', 'sao vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'dominica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelandia', 'ilhas cayman', 'marianas setentrionais', 'ossetia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'monaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlandia', 'ilhas virgens britanicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'sao pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn']
+COUNTRY_LIST = ['china', 'brasil', 'russia', 'japao', 'mexico', 'egito', 'italia', 'nova zelandia', 'somalia', 'estados unidos', 'franca', 'australia', 'reino unido', 'paises constituintes', 'india', 'indonesia', 'paquistao', 'nigeria', 'bangladesh', 'filipinas', 'vietna', 'etiopia', 'alemanha', 'irao', 'turquia', 'tailandia', 'africa do sul', 'myanmar', 'tanzania', 'coreia do sul', 'colombia', 'espanha', 'quenia', 'argentina', 'ucrania', 'argelia', 'polonia', 'sudao', 'iraque', 'canada', 'uganda', 'marrocos', 'arabia saudita', 'peru', 'uzbequistao', 'malasia', 'venezuela', 'nepal', 'gana', 'afeganistao', 'iemen', 'mocambique', 'coreia do norte', 'angola', 'siria', 'camaroes', 'costa do marfim', 'madagascar', 'sri lanka', 'romenia', 'niger', 'burkina faso', 'chile', 'mali', 'cazaquistao', 'malawi', 'guatemala', 'equador', 'zambia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudao do sul', 'bolivia', 'ruanda', 'belgica', 'cuba', 'tunisia', 'haiti', 'grecia', 'guine', 'checa', 'dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suecia', 'azerbaijao', 'bielorrussia', 'emirados arabes unidos', 'honduras', 'austria', 'israel', 'tajiquistao', 'suica', 'jordania', 'papua-nova guine', 'togo', 'hong kong', 'bulgaria', 'servia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'libia', 'nicaragua', 'quirguistao', 'dinamarca', 'singapura', 'eslovaquia', 'eritreia', 'centro-africana', 'costa rica', 'turquemenistao', 'territorios palestinos', 'irlanda', 'do congo', 'liberia', 'oman', 'croacia', 'libano', 'puntlandia', 'bosnia e herzegovina', 'panama', 'georgia', 'mauritania', 'moldavia', 'porto rico', 'somalilandia', 'uruguai', 'kuwait', 'mongolia', 'armenia', 'lituania', 'albania', 'jamaica', 'namibia', 'lesoto', 'catar', 'botswana', 'eslovenia', 'letonia', 'gambia', 'guine-bissau', 'kosovo', 'gabao', 'bahrein', 'trinidad e tobago', 'estonia', 'mauricia', 'guine equatorial', 'timor-leste', 'suazilandia', 'djibouti', 'fiji', 'chipre', 'comores', 'butao', 'guiana', 'macau', 'montenegro', 'ilhas salomao', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnistria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islandia', 'barbados', 'nova caledonia', 'polinesia francesa', 'vanuatu', 'abecasia', 'guiana francesa', 'mayotte', 'santa lucia', 'guam', 'curacao', 'nagorno-karabakh', 'sao vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'dominica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelandia', 'ilhas cayman', 'marianas setentrionais', 'ossetia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'monaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlandia', 'ilhas virgens britanicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'sao pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn']
 
 # Pronoun list
-PRONOUNS = ['quem', 'como', 'qual', 'quais', 'quando', 'quanto', 'quantos', 'quantas', 'onde', 'por que', 'por quê']
+PRONOUNS = ['quem', 'como', 'qual', 'quais', 'quando', 'quanto', 'quantos', 'quantas', 'onde', 'por que', 'por quê', 'que']
 EXPECTED_ANSWER = {
 	
 	# TODO: adicionar campo do preposições e nomes para INVALIDAR
@@ -43,7 +43,8 @@ EXPECTED_ANSWER = {
 	},
 
 	'por que': '',
-	'por quê': ''
+	'por quê': '',
+	'que': ''
 }
 
 
@@ -67,60 +68,67 @@ class ParsedQuestion():
 		self.expected = EXPECTED_ANSWER[pron] if pron else None
 
 	def __repr__(self):
-		s = "Pergunta: " + self.pergunta + '\n'
-		s += "Pronome: " + self.pron + '\n'
-		s += "País: " + self.country + '\n'
-		s += "Topico: " + str(self.topic) + '\n'
-		s += "Tipo de resposta: " + str(self.expected) + '\n'
+		s = "Pergunta: {0}\n".format(self.pergunta)
+		s += "Pronome: {0}\n".format(self.pron if self.pron else "none")
+		s += "País: {0}\n".format(self.country if self.country else "none")
+		s += "Topico: {0}\n".format(str(self.topic))
+		s += "Tipo de resposta: {0}\n".format(str(self.expected))
 		return s
 
+	def __unicode__(self):
+		return self.pergunta
+
 	def __str__(self):
-		return self.__repr__
+		return unicode(self).encode('utf-8')
 
 	def __hash__(self):
 		return self.pergunta.__hash__()
 
-	def __cmp__(self, other):
+	def __eq__(self, other):
 		return self.pergunta == other.pergunta
-	
-	# def __getitem__(self, i):
-	# 	return self.__dict__[self.__dict__.keys[i]]
-	
-	# def __setitem__(self, i, value):
-	# 	self.__dict__[self.__dict__.keys[i]] = value
 
-	# def __delitem__(self, i):
-	# 	del self.pergunta[i]
 
 
 def _find_pron(doc):
 
-	# NOTE: talvez precisemos verificar advérbios, é possível que alguns pronomes 
-	# sejam classificados como advérbios (tipo o 'quando': Classe gramatical: 
-	# advérbio, conjunção e pronome relativo)
 	# Find all pronouns
 	prons = [word for word in doc if word.pos_ == 'PRON']
-	
-	# Process pronoun
-	try:
-		# Assume that the first pronoun is relative to our question
-		pron = prons[0].lower_
-		
-		# If pronoun is not in our pronoun list, its not a recognizable question
-		if not pron in PRONOUNS: raise Exception("Tipo de pergunta não reconhecida")
 
-	except IndexError as e:
+	# print()
+	# print("Prons: " + str(prons))
+
+	# Assume that the first pronoun is relative to our question
+	for word in prons:
+		# print("Checking word '{0}'".format(word.lower_))
+		if word.lower_ in PRONOUNS:
+			return word.lower_ # Pronoun was found!
+	
+	# No pronoun found, maybe it was wrongly classified. Search in adverbs
+	advs = [word for word in doc if word.pos_ == 'ADV']
+	# print("Advs: " + str(advs))
+
+	# Search for word in valid pronouns list
+	for word in advs:
+		# print("Checking word '{0}'".format(word.lower_))
+		if word.pos_ in PRONOUNS:
+			return word.lower_ # Pronoun was found!
+	
+	# Still no pronoun found, brute force it
+	# print("Brute forcing")
+	for word in doc:
+		# print("Checking word '{0}'".format(word.lower_))
+		if word.lower_ in PRONOUNS:
+			return word.lower_
+
+	# print("Not found :c\n")
+	# If it still wasnt found, we dont have a valid pronoun
+	if not pron:
 		err_msg = "[Error] Nenhum pronome encontrado na pergunta."
 		print(err_msg)
-		raise ChatbotException(e, err_msg, doc.text)
+		raise ChatbotException(msg=err_msg, question=doc.text)
 
-	except Exception as e:
-		err_msg = "[Error] Pronome encontrado ('{0}') não está na lista de pronomes suportados.".format(pron)
-		print(err_msg)
-		raise ChatbotException(e, err_msg, doc.text)
-
-	return pron
-
+	# Not found
+	return None
 
 
 def _find_nouns(doc):
@@ -138,31 +146,25 @@ def _find_country(doc):
 
 	# Search for Named Entities in doc
 	for ent in doc.ents:
-		if not "republica" in ent.lower_ and ent.lower_ in COUNTRY_LIST:
-			return ent.lower_
+		tmp = text_canonicalize(ent.lower_)
+		if not "republica" in tmp and tmp in COUNTRY_LIST:
+			return tmp
 
 	# No valid named entity, fallback
 	# Find all proper nouns (country os person names)
-	propns = [word for word in doc if word.pos_ == 'PROPN']
-	custom_tag = {}
+	propns = [word for word in doc if word.pos_ == 'PROPN' and not word.text.isupper()]
 
 	# Process country name
 	try:
 		# Assume that the first proper noun is our country name
 		propn = propns[0].lower_
 		
-		# TODO: proper noun can also be a person's name, for now only check for 
-		# country's names
 		# If our proper noun is not in country's list, its an invalid country
 		if not propn in COUNTRY_LIST:
 			
 			for word in doc:
 				if word.lower_ in COUNTRY_LIST:
-					custom_tag[word.lower_] = "country"
-
-			try:
-				propn = custom_tag.keys()[0]
-			except: raise Exception("País desconhecido.")
+					return word.lower_
 
 	except IndexError as e:
 		err_msg = "[Error] Nenhum país encontrado na pergunta."
@@ -174,20 +176,31 @@ def _find_country(doc):
 		print(err_msg)
 		raise ChatbotException(e, err_msg, doc.text)
 
-	return propn
+	# Not found
+	return None
 
 
-# Class's static methods
+def _find_proper_nouns(doc):
+	pass
 
 def parse_question(question, pron=None, country=None, model=pt_model):
 
+	question = re.sub("[\n]", "", question)
 	doc = model(question)
 
-	if not pron: pron = _find_pron(doc)
-	if not country: country = _find_country(doc)
+	if not pron: 
+		try: pron = _find_pron(doc)
+		except Exception as e: 
+			print(e)
+			pron = None
+
+	if not country: 
+		try: country = _find_country(doc)
+		except: country = None
+	
 	abbrvs = _find_abbreviations(doc)
 	nouns = _find_nouns(doc)
-	topic = nouns + " " + "".join(abbrvs)
+	topic = nouns + " " + " ".join(abbrvs)
 	# topic = topic + " " + country
 
 	return ParsedQuestion(question, pron, country, topic)
@@ -214,6 +227,7 @@ def test(path="../perguntas.txt", debug=False):
 
 	res = []
 
+	counter = 0
 	for line in lines:
 		try:
 			if debug: print(line)
@@ -222,10 +236,21 @@ def test(path="../perguntas.txt", debug=False):
 		except ChatbotException as e:
 			res.append({
 				"err_msg": "Erro na pergunta '{0}'".format(line), 
-				"exception": e
+				"exception": e,
+				"index": counter
 				})
 
 		except Exception as e:
-			print("Unknown error occured. Error msg: '{0}'.".format(str(e)))
+			print("Unknown error occured. Error msg: '{0}'.".format(repr(e)))
+			# raise e
+
+		finally:
+			counter += 1
 
 	return res
+
+def get_lists(res):
+
+	no_pron = [r for r in res if not r.pron]
+	no_country = [r for r in res if not r.country]
+	return {'no_pron': no_pron, 'no_country': no_country}

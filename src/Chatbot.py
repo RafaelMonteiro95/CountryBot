@@ -27,6 +27,7 @@ CONFIRM_COUNTRY = ["Você ainda está falando do país {0}?\n"]
 CONFIRM_TOPIC = ["Você ainda está falando sobre {0}?\n"]
 NO_ANSWER = ["Desculpa, não sei responder a sua pergunta.\n"]
 
+
 # NOTE: chatbot should be a class or simply a method?
 def StartChatbot():
 	

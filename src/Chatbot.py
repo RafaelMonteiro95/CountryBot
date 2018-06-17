@@ -11,6 +11,10 @@
 	
 import random
 
+from google import google
+
+get_html = google.get_html()
+
 from parse_question import parse_question, text_canonicalize
 from parse_question import COUNTRY_LIST
 # from compose_answer import XXX nome do module de criação de respostas

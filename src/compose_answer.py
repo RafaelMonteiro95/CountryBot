@@ -23,6 +23,6 @@ def _replace_pronoun(parsed_question, answer):
 
 	return " ".join(final)
 
-# FIXME: placeholder
-def generate_answer(parsed_question, answer):
+# FIXME: placeholder answer generation
+def compose_answer(parsed_question, answer):
 	return _replace_pronoun(parsed_question, answer)

@@ -13,7 +13,7 @@ import random
 
 from parse_question import parse_question, text_canonicalize
 from parse_question import COUNTRY_LIST
-from compose_answer import 
+from compose_answer import compose_answer
 from get_answer import get_answer
 from ChatbotException import ChatbotException
 
@@ -30,7 +30,6 @@ NO_ANSWER = ["Desculpa, não sei responder a sua pergunta.\n"]
 
 index_mundi_base_url = "https://indexmundi.com/pt/"
 
-# NOTE: chatbot should be a class or simply a method?
 def StartChatbot():
 	
 	name = input(random.choice(GREETINGS))
@@ -117,3 +116,4 @@ def test(question):
 	res = pq(question)
 	ans = get_answer(res)
 	return Ans(res, ans)
+

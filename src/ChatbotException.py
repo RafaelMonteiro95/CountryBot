@@ -27,12 +27,5 @@ class ChatbotException(Exception):
 		s = "{0} in question '{1}'.\n".format(self.msg, self.question)
 		return s + repr(self.e)
 
-
-	# TODO: check unicode override
-	def __unicode__(self):
-		return self.__repr__()
-
 	def __str__(self):
 		return self.__repr__()
-		# TODO: check unicode function
-		# return unicode(self).encode('utf-8')

@@ -23,6 +23,7 @@ import ChatbotException as CE
 # COUNTRY_LIST = ['china', 'brasil', 'rússia', 'japão', 'méxico', 'egito', 'itália', 'nova zelândia', 'somália', 'estados unidos', 'frança', 'austrália', 'reino unido', 'países constituintes', 'índia', 'indonésia', 'paquistão', 'nigéria', 'bangladesh', 'filipinas', 'vietnã', 'etiópia', 'alemanha', 'irão', 'turquia', 'tailândia', 'áfrica do sul', 'myanmar', 'tanzânia', 'coreia do sul', 'colômbia', 'espanha', 'quénia', 'argentina', 'ucrânia', 'argélia', 'polónia', 'sudão', 'iraque', 'canadá', 'uganda', 'marrocos', 'arábia saudita', 'peru', 'uzbequistão', 'malásia', 'venezuela', 'nepal', 'gana', 'afeganistão', 'iémen', 'moçambique', 'coreia do norte', 'angola', 'síria', 'camarões', 'costa do marfim', 'madagáscar', 'sri lanka', 'roménia', 'níger', 'burkina faso', 'chile', 'mali', 'cazaquistão', 'malawi', 'guatemala', 'equador', 'zâmbia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudão do sul', 'bolívia', 'ruanda', 'bélgica', 'cuba', 'tunísia', 'haiti', 'grécia', 'guiné', 'república checa', 'república dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suécia', 'azerbaijão', 'bielorrússia', 'emirados árabes unidos', 'honduras', 'áustria', 'israel', 'tajiquistão', 'suíça', 'jordânia', 'papua-nova guiné', 'togo', 'hong kong', 'bulgária', 'sérvia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'líbia', 'nicarágua', 'quirguistão', 'dinamarca', 'singapura', 'eslováquia', 'eritreia', 'república centro-africana', 'costa rica', 'turquemenistão', 'territórios palestinos', 'república da irlanda', 'república do congo', 'libéria', 'oman', 'croácia', 'líbano', 'puntlândia', 'bósnia e herzegovina', 'panamá', 'geórgia', 'mauritânia', 'moldávia', 'porto rico', 'somalilândia', 'uruguai', 'kuwait', 'mongólia', 'arménia', 'lituânia', 'albânia', 'jamaica', 'namíbia', 'lesoto', 'catar', 'botswana', 'eslovénia', 'letónia', 'gâmbia', 'guiné-bissau', 'kosovo', 'gabão', 'bahrein', 'trinidad e tobago', 'estónia', 'maurícia', 'guiné equatorial', 'timor-leste', 'suazilândia', 'djibouti', 'fiji', 'chipre', 'comores', 'butão', 'guiana', 'macau', 'montenegro', 'ilhas salomão', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnístria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islândia', 'barbados', 'nova caledônia', 'polinésia francesa', 'vanuatu', 'abecásia', 'guiana francesa', 'mayotte', 'santa lúcia', 'guam', 'curaçao', 'nagorno-karabakh', 'são vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'domínica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelândia', 'ilhas cayman', 'marianas setentrionais', 'ossétia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'mónaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlândia', 'ilhas virgens britânicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'são pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn']
 # No accents and all lowercase list
 COUNTRY_LIST = ['china', 'brasil', 'russia', 'japao', 'mexico', 'egito', 'italia', 'nova zelandia', 'somalia', 'estados unidos', 'franca', 'australia', 'reino unido', 'paises constituintes', 'india', 'indonesia', 'paquistao', 'nigeria', 'bangladesh', 'filipinas', 'vietna', 'etiopia', 'alemanha', 'irao', 'turquia', 'tailandia', 'africa do sul', 'myanmar', 'tanzania', 'coreia do sul', 'colombia', 'espanha', 'quenia', 'argentina', 'ucrania', 'argelia', 'polonia', 'sudao', 'iraque', 'canada', 'uganda', 'marrocos', 'arabia saudita', 'peru', 'uzbequistao', 'malasia', 'venezuela', 'nepal', 'gana', 'afeganistao', 'iemen', 'mocambique', 'coreia do norte', 'angola', 'siria', 'camaroes', 'costa do marfim', 'madagascar', 'sri lanka', 'romenia', 'niger', 'burkina faso', 'chile', 'mali', 'cazaquistao', 'malawi', 'guatemala', 'equador', 'zambia', 'camboja', 'chade', 'senegal', 'zimbabwe', 'sudao do sul', 'bolivia', 'ruanda', 'belgica', 'cuba', 'tunisia', 'haiti', 'grecia', 'guine', 'checa', 'dominicana', 'portugal', 'benim', 'hungria', 'burundi', 'suecia', 'azerbaijao', 'bielorrussia', 'emirados arabes unidos', 'honduras', 'austria', 'israel', 'tajiquistao', 'suica', 'jordania', 'papua-nova guine', 'togo', 'hong kong', 'bulgaria', 'servia', 'paraguai', 'laos', 'serra leoa', 'el salvador', 'libia', 'nicaragua', 'quirguistao', 'dinamarca', 'singapura', 'eslovaquia', 'eritreia', 'centro-africana', 'costa rica', 'turquemenistao', 'territorios palestinos', 'irlanda', 'do congo', 'liberia', 'oman', 'croacia', 'libano', 'puntlandia', 'bosnia e herzegovina', 'panama', 'georgia', 'mauritania', 'moldavia', 'porto rico', 'somalilandia', 'uruguai', 'kuwait', 'mongolia', 'armenia', 'lituania', 'albania', 'jamaica', 'namibia', 'lesoto', 'catar', 'botswana', 'eslovenia', 'letonia', 'gambia', 'guine-bissau', 'kosovo', 'gabao', 'bahrein', 'trinidad e tobago', 'estonia', 'mauricia', 'guine equatorial', 'timor-leste', 'suazilandia', 'djibouti', 'fiji', 'chipre', 'comores', 'butao', 'guiana', 'macau', 'montenegro', 'ilhas salomao', 'luxemburgo', 'suriname', 'cabo verde', 'saara ocidental', 'transnistria', 'malta', 'guadalupe', 'brunei', 'martinica', 'bahamas', 'belize', 'maldivas', 'islandia', 'barbados', 'nova caledonia', 'polinesia francesa', 'vanuatu', 'abecasia', 'guiana francesa', 'mayotte', 'santa lucia', 'guam', 'curacao', 'nagorno-karabakh', 'sao vicente e granadinas', 'aruba', 'kiribati', 'ilhas virgens americanas', 'tonga', 'jersey', 'seychelles', 'antigua e barbuda', 'ilha de man', 'ceuta', 'melilla', 'andorra', 'dominica', 'guernsey', 'bermudas', 'ilhas marshall', 'gronelandia', 'ilhas cayman', 'marianas setentrionais', 'ossetia do sul', 'ilhas faroe', 'sint maarten', 'liechtenstein', 'monaco', 'saint-martin', 'san marino', 'gibraltar', 'ilhas turks e caicos', 'ilhas åland', 'finlandia', 'ilhas virgens britanicas', 'palau', 'bonaire', 'ilhas cook', 'anguilla', 'wallis e futuna', 'tuvalu', 'nauru', 'sao pedro e miquelon', 'montserrat', 'sint eustatius', 'ilhas malvinas', 'svalbard e jan mayen', 'noruega', 'ilha norfolk', 'ilha christmas', 'saba', 'niue', 'tokelau', 'vaticano', 'ilha wake', 'midway atoll', 'ilhas pitcairn', 'usa', 'eua']
+# FIXME: EUA, Estados Unidos e Inglaterra estão dando erros, precisa ver qual erro 
 
 # Lista de verbos de cópular (ligação)
 VCOP_LIST = ["ser", "estar", "permanecer", "ficar", "tornar", "andar", "parecer", "virar", "continuar", "viver"]
@@ -38,7 +39,8 @@ EXPECTED_ANSWER = {
 		'PROPN': {}
 	},
 
-	# TODO: usar Rule-Base Matching para identificar datas por exemplo 
+	# TODO: Usar Rule-Base Matching para identificar datas por exemplo 
+	# NOTE: /\ Talvez não seja necessário
 	# 13/12/1996 ou 13.12.1996. Datas no formato 13 de dezembro de 1996 já é 
 	# reconhecido como o padrão NUM de NOUM de NUM<year>
 	'quando': 'data', 
@@ -98,14 +100,8 @@ class ParsedQuestion():
 
 		return s
 
-	# TODO: check unicode override
-	def __unicode__(self):
-		return self.pergunta
-
 	def __str__(self):
 		return self.__repr__()
-		# TODO: check unicode function
-		# return unicode(self).encode('utf-8') 
 
 	def __hash__(self):
 		return self.pergunta.__hash__()
@@ -231,7 +227,8 @@ def _find_topic(doc, exclude_cop=True):
 
 	return topic.strip()
 
-# TODO: To find places or people's names
+# IMPORTANT: FIND PEOPLE NAMES!!!!
+# TODO: Implement this to find places or people's names
 def _find_proper_nouns(doc):
 	pass
 

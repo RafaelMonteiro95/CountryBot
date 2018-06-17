@@ -11,10 +11,6 @@
 	
 import random
 
-from google import google
-
-get_html = google.get_html()
-
 from parse_question import parse_question, text_canonicalize
 from parse_question import COUNTRY_LIST
 # from compose_answer import XXX nome do module de criação de respostas
@@ -115,4 +111,9 @@ if __name__ == "__main__":
 	StartChatbot()
 
 
-# NOTE: move to get_answer file or something like that
+
+# Debug
+def test(question):
+	res = pq(question)
+	ans = get_answer(res)
+	return Ans(res, ans)

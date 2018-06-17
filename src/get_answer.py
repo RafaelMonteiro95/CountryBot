@@ -13,7 +13,7 @@ def separate_words(text):
 
 	# Regexes used to identify words that comes BEFORE the type of words we want to
 	# separate
-	word_regex = r"[A-Za-z]"
+	word_regex = r"[\)\]a-z]"
 	year_regex = r"\d{4}"
 	phone_regex = r"telef\."
 	phone_code_regex = r"\+\d+"
@@ -76,7 +76,12 @@ def get_answer(parsed):
 
 	infobox = unicodedata.normalize("NFKD", infobox.text)
 	infobox = separate_words(infobox)
-	infobox_ = infobox.lower()
+	infobox_ = re.sub(r"[–−]", r"-", infobox.lower())
+
+	# Debug
+	file = open("infobox-brasil.txt", "w")
+	file.write(infobox)
+	file.close()
 
 	if parsed.core in infobox:
 		_, start, end = find_between(infobox_, parsed.core.lower(), " - ")

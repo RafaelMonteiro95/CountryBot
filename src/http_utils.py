@@ -1,20 +1,19 @@
-#from __future__ import unicode_literals
-# from __future__ import print_function
-# from __future__ import division
+##############################################
+# Processamento de Linguagem Natural SCC0633 #
+# HTTP handlers and utilities source file    #
+#                                            #
+# Giovanna Oliveira Guimarães   9293693      #
+# Lucas Alexandre Soares        9293265      #
+# Rafael Joegs Monteiro         9293095      #
+# Darlan Xavier Nascimento      10867851     #
+#                                            #
+##############################################
 
-#from future import standard_library
-#standard_library.install_aliases()
+import time
+import urllib.request, urllib.error 
 
 from selenium import webdriver
 from parse_question import text_canonicalize
-
-import time
-import urllib.request, urllib.error #, urllib.parse
-# from builtins import range
-# from past.utils import old_div
-# from functools import wraps
-# # import requests
-# from urllib.parse import urlencode, quote
 
 def url_encode(url):
     url = text_canonicalize(url)

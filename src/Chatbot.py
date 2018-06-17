@@ -13,8 +13,8 @@ import random
 
 from parse_question import parse_question, text_canonicalize
 from parse_question import COUNTRY_LIST
-# from compose_answer import XXX nome do module de criação de respostas
-# from XXX import XXX -- NOTE: this is for getting answer for external source - DEPS: Joegs
+from compose_answer import 
+from get_answer import get_answer
 from ChatbotException import ChatbotException
 
 ### Lists with multiple answers for more organic chat

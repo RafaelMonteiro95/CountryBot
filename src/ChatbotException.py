@@ -1,6 +1,6 @@
 ##############################################
 # Processamento de Linguagem Natural SCC0633 #
-# General countries Chatbot main source file #
+# Chatbot Module exception class source file #
 #                                            #
 # Giovanna Oliveira Guimarães   9293693      #
 # Lucas Alexandre Soares        9293265      #

@@ -1,6 +1,6 @@
 ##############################################
 # Processamento de Linguagem Natural SCC0633 #
-# General countries Chatbot main source file #
+# Natural answer generation source file      #
 #                                            #
 # Giovanna Oliveira Guimarães   9293693      #
 # Lucas Alexandre Soares        9293265      #
@@ -22,3 +22,7 @@ def _replace_pronoun(parsed_question, answer):
 	final = [answer if x == parsed_question.pron else x for x in ans]
 
 	return " ".join(final)
+
+# FIXME: placeholder
+def generate_answer(parsed_question, answer):
+	return _replace_pronoun(parsed_question, answer)

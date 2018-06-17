@@ -1,11 +1,41 @@
+##############################################
+# Processamento de Linguagem Natural SCC0633 #
+# Answer retrieval source file               #
+#                                            #
+# Giovanna Oliveira Guimarães   9293693      #
+# Lucas Alexandre Soares        9293265      #
+# Rafael Joegs Monteiro         9293095      #
+# Darlan Xavier Nascimento      10867851     #
+#                                            #
+##############################################
+
+
 import sys
 import unicodedata
 import re
+
+from os import path, makedirs
+from datetime import datetime
+
 from http_utils import get_html, url_encode
 from bs4 import BeautifulSoup
 from ChatbotException import ChatbotException
 
 index_mundi_base_url = "https://indexmundi.com/pt/"
+cache_dir = "cache"
+cache_file_base = cache_dir + "/indexmundi-{0}-infobox"
+
+def _cache_webpage(content, filename):
+	file = open(filename, "w")
+	file.write(content)
+	file.flush()
+	file.close()
+
+def _get_cached_webpage(filename):
+	file = open(filename, "r")
+	content = file.read()
+	file.close()
+	return content
 
 def separate_words(text):
 	# Regex for removing extra whitespaces if there is more than one
@@ -59,37 +89,72 @@ def find_between_r( s, first, last ):
 '''
 
 def get_answer(parsed):
-	country = url_encode(parsed.country)
-	url = index_mundi_base_url + country
 
-	html = get_html(url)
-	soup = BeautifulSoup(html, "html.parser")
+	# If cache directory doesnt exists, create it
+	if not path.isdir(cache_dir): 
+		try:
+			makedirs(cache_dir)
+		except OSError as e:
+			print("[Warning] failed to create cache directory, continuing without cache")
+		except Exception as e:
+			print("[Error]: Unknown error ocurred. Message: '{0}'".format(str(e)))
 
-	infobox = soup.findAll("table", attrs={"class": "infobox"})
+	# Check if cached file exists
+	cache_file_path = cache_file_base.format(parsed.country.lower())
+	cache_need_update = True
 
-	try:
-		infobox = infobox[0]
-	except IndexError as e:
-		err_msg = "[Error] Tabela não encontrada"
-		print(err_msg)
-		raise ChatbotException(e, err_msg, parsed.question)
+	if path.isfile(cache_file_path):
 
-	infobox = unicodedata.normalize("NFKD", infobox.text)
-	infobox = separate_words(infobox)
+		# Check cached file timestamp
+		cache_timestamp = datetime.fromtimestamp(path.getmtime(cache_file_path))
+		diff = datetime.now() - cache_timestamp
+		
+		# If file is more than 1 day old, update it, else just load file
+		if diff.days > 0:
+			cache_need_update = True
+		else: 
+			cache_need_update = False
+			print("Getting page from cache")
+			infobox = _get_cached_webpage(cache_file_path)
+	
+	# No cache or cache needs update, download file
+	if cache_need_update:
+		# Create url for indexmundi
+		country = url_encode(parsed.country)
+		url = index_mundi_base_url + country
+
+		html = get_html(url)
+		soup = BeautifulSoup(html, "html.parser")
+
+		# Find infobox table
+		infobox = soup.findAll("table", attrs={"class": "infobox"})
+
+		try:
+			infobox = infobox[0]
+		except IndexError as e:
+			err_msg = "[Error] Tabela não encontrada"
+			print(err_msg)
+			raise ChatbotException(e, err_msg, parsed.question)
+
+		# Pre-process infobox text
+		infobox = unicodedata.normalize("NFKD", infobox.text)
+		infobox = separate_words(infobox)
+		_cache_webpage(infobox, cache_file_path)
+	
+	# Generate lowercase infobox for use in comparations
 	infobox_ = re.sub(r"[–−]", r"-", infobox.lower())
 
-	# Debug
-	file = open("infobox-brasil.txt", "w")
-	file.write(infobox)
-	file.close()
-
+	# Try searching for answer using question's core first, if no answer, search
+	# using topic.
 	if parsed.core in infobox:
 		_, start, end = find_between(infobox_, parsed.core.lower(), " - ")
-		print("core")
+	
+	# TODO: make better topic searching and processing to get answer
 	else:
-		print(parsed.topic.lower())
 		_, start, end = find_between(infobox_, parsed.topic.lower(), " - ")
 
+	# Get everything between - blahblah - and assume its the correct answer
+	# TODO: clean answer
 	ans = infobox[start:end]
 	
 	return ans.strip()

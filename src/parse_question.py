@@ -76,7 +76,7 @@ pt_model = spacy.load('pt')
 
 class ParsedQuestion():
 
-	def __init__(self, question, pron=None, country=None, topic=None):
+	def __init__(self, question, pron=None, country=None, topic=None, core=None):
 
 		self.pergunta = question
 		self.pergunta_canon = text_canonicalize(question)
@@ -84,13 +84,15 @@ class ParsedQuestion():
 		self.pron_lower = pron.lower() if pron else None
 		self.country = country
 		self.topic = topic
+		self.core = core
 		self.expected = EXPECTED_ANSWER[self.pron_lower] if pron else None
 
 	def __repr__(self):
 		s = "Pergunta: {0}\n".format(self.pergunta)
-		s += "Pronome: {0}\n".format(self.pron if self.pron else "none")
-		s += "País: {0}\n".format(self.country if self.country else "none")
+		s += "Pronome: {0}\n".format(self.pron)
+		s += "País: {0}\n".format(self.country)
 		s += "Topico: {0}\n".format(str(self.topic))
+		s += "Núcleo da frase: {0}\n".format(str(self.core))
 		s += "Tipo de resposta: {0}\n".format(str(self.expected))
 		s += "Possível query: '{0}'".format(text_canonicalize(str(self.topic) + " " + str(self.country)))
 
@@ -248,10 +250,23 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 		try: country = _find_country(doc)
 		except: country = None
 	
+	# Search for parents in each token
+	core = None
+	for token in doc:
+		ancestors = [ancestor for ancestor in token.ancestors]
+		
+		# If token doesnt have a parent, its probably the sentence nucleus
+		if not ancestors:
+			core = token.lower_
+
+	if not core:
+		err_msg = "[Warning] Pergunta sem núcleo."
+		print(err_msg)
+
 	abbrvs = _find_abbreviations(doc)
 	topic = _find_topic(doc)
 
-	return ParsedQuestion(question, pron, country, topic)
+	return ParsedQuestion(question, pron, country, topic, core)
 
 
 # Compiled regexes for canincalizing text
@@ -264,6 +279,7 @@ regex = [ re.compile("[áàâãäåÁÀÂÃÄÅ]"),
 	re.compile("[çÇ]"),
 	re.compile("[ñ]"),
 	re.compile("\\s+"),
+	re.compile("\\n")
 ]
 def text_canonicalize(question):
 
@@ -276,6 +292,7 @@ def text_canonicalize(question):
 	question = re.sub(regex[6], "c", question)
 	question = re.sub(regex[7], "n", question)
 	question = re.sub(regex[8], " ", question)
+	question = re.sub(regex[9], " ", question)
 	return question
 
 

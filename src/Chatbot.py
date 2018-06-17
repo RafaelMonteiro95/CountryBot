@@ -8,7 +8,7 @@
 # Darlan Xavier Nascimento      10867851     #
 #                                            #
 ##############################################
-
+	
 import random
 
 from parse_question import parse_question, text_canonicalize
@@ -109,3 +109,6 @@ def StartChatbot():
 
 if __name__ == "__main__":
 	StartChatbot()
+
+
+# NOTE: move to get_answer file or something like that

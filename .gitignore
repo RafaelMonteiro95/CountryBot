@@ -106,7 +106,9 @@ venv.bak/
 # Custom
 corpus/
 doc/
-src/grammar.fcfg
 
+src/cache/
+src/cache/*
+src/grammar.fcfg
 src/run.py
 src/brzl.html

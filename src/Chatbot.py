@@ -30,9 +30,73 @@ NO_ANSWER = ["Desculpa, não sei responder a sua pergunta.\n"]
 
 index_mundi_base_url = "https://indexmundi.com/pt/"
 
+def Greet():
+	name = input(random.choice(GREETINGS))
+	return name
+
+def ProcessQuestion():
+	abort_question = False
+
+	# Ask question
+	print(question_msg)
+	question = input()
+	parsed = parse_question(question)
+
+	# If no pronoun was found, we cant interpret the question, so asked user
+	# to rewrite the question
+	if not parsed.pron:
+		print(random.choice(UNKNOWN_QUESTION_ANSWERS))
+		continue
+		
+
+	# Keep asking for country name until a recognizable one is given or user
+	# ask another question
+	while not parsed.country and not abort_question:
+		
+		print(random.choice(UNKNOWN_COUNTRY_ANSWERS))
+		print(random.choice(ASK_AGAIN))
+		
+		country = input()
+		_country = country.lower()
+		
+		if _country in COUNTRY_LIST: parsed.country = _country
+		elif 	("outra" in _country and "pergunta" in _country) or 	\
+				("mudar" in _country and "pergunta" in _country) or 	\
+				("trocar" in _country and "pergunta" in _country) or 	\
+				("refazer" in _country and "pergunta" in _country):
+				abort_question = True
+
+	if _country == 'usa' or _country == 'eua':
+		parse_question.country = 'estados unidos'
+
+	# Go to next iteration to ask for next question
+	if abort_question: 
+		question_msg = "Ok, vamos mudar a pergunta." # probably temporary
+		continue
+	
+	print("[Debug]: Parsed question:\n")
+	print(parsed)
+	print()
+	question_msg = "Próxima pergunta!" # probably temporary
+
+	#Topic and country memory will be used for more fluid and realistic chat
+	topic_mem = parsed.topic
+	country_mem = parsed.country
+
+	# Question was successfuly parsed, try to find the answer
+	# answer = find_answer()
+	answer = None
+
+	if answer:
+		# print(compose_answer(question, answer))
+		pass
+	else:
+		print("Ainda não implementado")
+		# print(random.choice(NO_ANSWER))
+
 def StartChatbot():
 	
-	name = input(random.choice(GREETINGS))
+	name = Greet()
 	chatting = True
 	topic_mem = ''
 	country_mem = ''

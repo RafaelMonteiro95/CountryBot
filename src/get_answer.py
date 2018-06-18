@@ -22,6 +22,7 @@ from bs4 import BeautifulSoup
 from ChatbotException import ChatbotException
 from parse_question import pt_model
 
+
 index_mundi_base_url = "https://indexmundi.com/pt/"
 cache_dir = "cache"
 cache_file_base = cache_dir + "/indexmundi-{0}-infobox"
@@ -60,26 +61,16 @@ def _process_answer(ans):
 
 		counter += 1
 
-	# print(start)
 	# Find some possible separators like [], (), \n...
 	counter = 0
 
-	# print(ans[start:])
 	for i in ans[start:]:
-		# print("\n{0} == ' '? {1}".format(i, i == " "))
-		# print("{0} not i.isprintable()? {1}".format(i, not i.isprintable()))
-		# print("{0} not i.isalnum()? {1}".format(i, not i.isalnum()))
-		# print(i)
-		# print(i == '-')
 		if i == " ": pass # ignore whitespace
 		elif not i.isprintable() or i == '[' or i == '-':
 		#or not i.isalnum():
 			end = counter
-			# print("End = " + str(end))
 			break
 		counter += 1
-	
-	# print(start, end)
 
 	return ans[start:end] if start < end else ans
 
@@ -136,6 +127,7 @@ def get_answer(parsed):
 			print("[Error]: Erro desconhecido. Mensagem: '{0}'".format(str(e)))
 
 	# Check if cached file exists
+	print(parsed)
 	try:
 		cache_file_path = cache_file_base.format(parsed.country.lower())
 	except AttributeError as e:

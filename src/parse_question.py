@@ -161,15 +161,26 @@ def _find_country(doc):
 			
 			for word in doc:
 				if word.lower_ in COUNTRY_LIST:
+					print("Country: " + word.text)
 					return word.text
 
 	except IndexError as e:
+		# No proper noun found, search word by word
+		for word in doc:
+			tmp = text_canonicalize(word.lower_)
+			if tmp in COUNTRY_LIST:
+				return tmp
+
 		err_msg = "[Error] Nenhum país encontrado na pergunta."
+		# print(err_msg, e)
 		raise CE.ChatbotException(e, err_msg, doc.text)
 	
 	except Exception as e:
 		err_msg = "[Error] País '{0}' desconhecido.".format(propn)
+		# print(err_msg)
 		raise CE.ChatbotException(e, err_msg, doc.text)
+
+	print("No country found")
 
 	# Not found
 	return None
@@ -231,9 +242,7 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 
 	if not pron: 
 		try: pron = _find_pron(doc)
-		except Exception as e: 
-			print(e)
-			pron = None
+		except: pron = None
 
 	if not country: 
 		try: country = _find_country(doc)
@@ -253,7 +262,7 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 		
 
 	abbrvs = _find_abbreviations(doc)
-	topic = _find_topic(doc)
+	topic = re.sub(country, "", _find_topic(doc))
 
 	return ParsedQuestion(question, pron, country, topic, core)
 
@@ -280,7 +289,7 @@ def text_canonicalize(question):
 	question = re.sub(regex[5], "y", question)
 	question = re.sub(regex[6], "c", question)
 	question = re.sub(regex[7], "n", question)
-	# question = re.sub(regex[8], " ", question)
+	question = re.sub(regex[8], " ", question)
 	question = re.sub(regex[9], " ", question)
 	return question
 

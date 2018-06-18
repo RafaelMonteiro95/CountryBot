@@ -1,0 +1,17 @@
+parse_question("Quem é o presidente do Brasil?")
+parse_question("Quem é o presidente do brasil?")
+parse_question("Quem é o presidente do senado federal do brasil?")
+parse_question("Quem é o presidente da China?")
+parse_question("Quem é o presidente da Coreia do Sul?")
+parse_question("Quem é o presidente da Coreia do Norte?")
+parse_question("Quem é o presidente do Reino Unido?")
+
+parse_question("Qual é a língua oficial do Brasil?")
+parse_question("Qual é a língua oficial da Angola?")
+parse_question("Qual é a língua oficial da França?")
+
+parse_question("Qual é o IDH do Brasil?")
+parse_question("Qual é o IDH do Reino Unido?")
+parse_question("Qual é o IDH do Camboja?")
+
+parse_question("Qual é o PIB do Brasil?")

@@ -15,7 +15,7 @@ import sys
 # Replaces the question pronoun in order to 
 # compose the answer
 def _replace_pronoun(parsed_question, answer):
-	phrase = parsed_question.pergunta.replace("?", "")
+	phrase = parsed_question.question.replace("?", "")
 	ans = phrase.split(" ")
 
 	# x is a word of ans

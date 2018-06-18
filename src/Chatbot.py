@@ -117,3 +117,17 @@ def test(question):
 	ans = get_answer(res)
 	return Ans(res, ans)
 
+def test2():
+	file = open("../perguntas.txt")
+	content = file.readlines()
+	res = []
+	questions = [line for line in content if not line.startswith("#")]
+	for q in questions:
+
+		try:
+			res.append(test(q))
+		except ChatbotException as e:
+			print(e)
+			res.append({'error': e})
+
+	return res

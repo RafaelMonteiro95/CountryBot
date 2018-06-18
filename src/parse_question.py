@@ -64,24 +64,19 @@ EXPECTED_ANSWER = {
 	'que': '',
 	'como': '',
 	'qual': '',
-	'quais': '',
+	'quais': ''
 }
 
 
 # Load portuguese model
 pt_model = spacy.load('pt')
-# pergunta = input()
-# pergunta = u"Quem é o presidente do Brasil?"
-# doc = pt_model(pergunta)
-
-
 
 class ParsedQuestion():
 
 	def __init__(self, question, pron=None, country=None, topic=None, core=None):
 
-		self.pergunta = question
-		self.pergunta_canon = text_canonicalize(question)
+		self.question = question
+		self.question_canon = text_canonicalize(question)
 		self.pron = pron
 		self.pron_lower = pron.lower() if pron else None
 		self.country = country
@@ -90,7 +85,7 @@ class ParsedQuestion():
 		self.expected = EXPECTED_ANSWER[self.pron_lower] if pron else None
 
 	def __repr__(self):
-		s = "Pergunta: {0}\n".format(self.pergunta)
+		s = "Pergunta: {0}\n".format(self.question)
 		s += "Pronome: {0}\n".format(self.pron)
 		s += "País: {0}\n".format(self.country)
 		s += "Topico: {0}\n".format(str(self.topic))
@@ -104,10 +99,10 @@ class ParsedQuestion():
 		return self.__repr__()
 
 	def __hash__(self):
-		return self.pergunta.__hash__()
+		return self.question.__hash__()
 
 	def __eq__(self, other):
-		return self.pergunta == other.pergunta
+		return self.question == other.question
 
 
 
@@ -138,7 +133,6 @@ def _find_pron(doc):
 	# If it still wasnt found, we dont have a valid pronoun
 	if not pron:
 		err_msg = "[Error] Nenhum pronome encontrado na pergunta."
-		print(err_msg)
 		raise CE.ChatbotException(msg=err_msg, question=doc.text)
 
 	# Not found
@@ -171,12 +165,10 @@ def _find_country(doc):
 
 	except IndexError as e:
 		err_msg = "[Error] Nenhum país encontrado na pergunta."
-		print(err_msg)
 		raise CE.ChatbotException(e, err_msg, doc.text)
 	
 	except Exception as e:
 		err_msg = "[Error] País '{0}' desconhecido.".format(propn)
-		print(err_msg)
 		raise CE.ChatbotException(e, err_msg, doc.text)
 
 	# Not found
@@ -258,7 +250,7 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 
 	if not core:
 		err_msg = "[Warning] Pergunta sem núcleo."
-		print(err_msg)
+		
 
 	abbrvs = _find_abbreviations(doc)
 	topic = _find_topic(doc)

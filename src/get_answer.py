@@ -16,10 +16,11 @@ import re
 
 from os import path, makedirs
 from datetime import datetime
-
+from itertools import permutations
 from http_utils import get_html, url_encode
 from bs4 import BeautifulSoup
 from ChatbotException import ChatbotException
+from parse_question import pt_model
 
 index_mundi_base_url = "https://indexmundi.com/pt/"
 cache_dir = "cache"
@@ -36,6 +37,51 @@ def _get_cached_webpage(filename):
 	content = file.read()
 	file.close()
 	return content
+
+def _process_answer(ans):
+
+	start = 0
+	end = 0
+	counter = 0
+	
+	in_paren = False
+	in_sbrack = False
+
+	# Find first word index
+	for i in ans:
+		if i == "(": in_paren = True
+		elif i == ")": in_paren = False
+		elif i == "[": in_sbrack = True
+		elif i == "]": in_sbrack = False
+		
+		elif not in_paren and not in_sbrack and i.isalnum():
+			start = counter
+			break
+
+		counter += 1
+
+	# print(start)
+	# Find some possible separators like [], (), \n...
+	counter = 0
+
+	# print(ans[start:])
+	for i in ans[start:]:
+		# print("\n{0} == ' '? {1}".format(i, i == " "))
+		# print("{0} not i.isprintable()? {1}".format(i, not i.isprintable()))
+		# print("{0} not i.isalnum()? {1}".format(i, not i.isalnum()))
+		# print(i)
+		# print(i == '-')
+		if i == " ": pass # ignore whitespace
+		elif not i.isprintable() or i == '[' or i == '-':
+		#or not i.isalnum():
+			end = counter
+			# print("End = " + str(end))
+			break
+		counter += 1
+	
+	# print(start, end)
+
+	return ans[start:end] if start < end else ans
 
 def separate_words(text):
 	# Regex for removing extra whitespaces if there is more than one
@@ -72,21 +118,11 @@ def separate_words(text):
 
 def find_between(s, first, last):
     try:
-        start = s.index( first ) + len( first )
-        end = s.index( last, start )
+        start = s.index(first) + len(first)
+        end = s.index(last, start)
         return s[start:end], start, end
     except ValueError:
         return "", 0, 0
-
-'''
-def find_between_r( s, first, last ):
-    try:
-        start = s.rindex( first ) + len( first )
-        end = s.rindex( last, start )
-        return s[start:end]
-    except ValueError:
-        return ""
-'''
 
 def get_answer(parsed):
 
@@ -95,12 +131,17 @@ def get_answer(parsed):
 		try:
 			makedirs(cache_dir)
 		except OSError as e:
-			print("[Warning] failed to create cache directory, continuing without cache")
+			print("[Warning] Falha ao criar o diretório de cache, continuando sem cache")
 		except Exception as e:
-			print("[Error]: Unknown error ocurred. Message: '{0}'".format(str(e)))
+			print("[Error]: Erro desconhecido. Mensagem: '{0}'".format(str(e)))
 
 	# Check if cached file exists
-	cache_file_path = cache_file_base.format(parsed.country.lower())
+	try:
+		cache_file_path = cache_file_base.format(parsed.country.lower())
+	except AttributeError as e:
+		err_msg = "[Error] Nenhum país fornecido, impossível encontrar uma resposta."
+		raise ChatbotException(e, err_msg, parsed.question)
+
 	cache_need_update = True
 
 	if path.isfile(cache_file_path):
@@ -114,11 +155,11 @@ def get_answer(parsed):
 			cache_need_update = True
 		else: 
 			cache_need_update = False
-			print("Getting page from cache")
 			infobox = _get_cached_webpage(cache_file_path)
 	
 	# No cache or cache needs update, download file
 	if cache_need_update:
+		
 		# Create url for indexmundi
 		country = url_encode(parsed.country)
 		url = index_mundi_base_url + country
@@ -132,29 +173,45 @@ def get_answer(parsed):
 		try:
 			infobox = infobox[0]
 		except IndexError as e:
+			# NOTE: a página do kiribati não existe
+			# NOTE: a do Vietnã deve ser vietname
 			err_msg = "[Error] Tabela não encontrada"
-			print(err_msg)
 			raise ChatbotException(e, err_msg, parsed.question)
 
 		# Pre-process infobox text
-		infobox = unicodedata.normalize("NFKD", infobox.text)
+		# IMPORTANT: NÃO REMOVER O K DA NORMALIZAÇÃO!!!!!! VAI CAGAR TUDO, PARECE UMA BOA IDEIA NA HORA, MAS DEPOIS VAI SER PIOR!
+		infobox = unicodedata.normalize("NFKC", infobox.text)
 		infobox = separate_words(infobox)
+		# infobox = re.sub(r"\n", r" ", infobox.lower())
 		_cache_webpage(infobox, cache_file_path)
 	
 	# Generate lowercase infobox for use in comparations
-	infobox_ = re.sub(r"[–−]", r"-", infobox.lower())
+	infobox_ = re.sub(r"[-–−]", r"-", infobox.lower())
+	infobox_model = pt_model(infobox)
+	unstoppable_infobox = " ".join([word.text for word in infobox_model if word.is_stop == False])
+
+	ans = None
 
 	# Try searching for answer using question's core first, if no answer, search
 	# using topic.
-	if parsed.core in infobox:
-		_, start, end = find_between(infobox_, parsed.core.lower(), " - ")
-	
-	# TODO: make better topic searching and processing to get answer
-	else:
-		_, start, end = find_between(infobox_, parsed.topic.lower(), " - ")
+	# IMPORTANT: this isnt working and i dunno why, halp
+	# if parsed.core in infobox:
+	# 	_, start, end = find_between(infobox_, parsed.core.lower(), " - ")
+	# 	# Get everything between - blahblah - and assume its the correct answer
+	# 	# TODO: clean answer
+	# 	ans = infobox[start:end]
 
-	# Get everything between - blahblah - and assume its the correct answer
-	# TODO: clean answer
-	ans = infobox[start:end]
-	
+	# No answer found with core, search with topic
+	if not ans and parsed.topic:
+		perm = permutations(parsed.topic.lower().split(" "))
+		for p in perm:
+			query = " ".join(p)
+			# print(query)
+			_, start, end = find_between(unstoppable_infobox.lower(), query, " - ")
+			ans = unstoppable_infobox[start:end]
+			if ans: break
+
+	if not ans: print("Coulndt find answer.")
+	ans = _process_answer(re.sub(r"[-–−]", r"-", ans))
+
 	return ans.strip()

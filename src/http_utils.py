@@ -17,8 +17,7 @@ from parse_question import text_canonicalize
 
 def url_encode(url):
     url = text_canonicalize(url)
-    url.replace(" ", "_")
-    return url
+    return url.replace(r" ", r"_")
 
 
 def get_html(url):

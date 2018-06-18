@@ -46,7 +46,7 @@ def ProcessQuestion():
 	# to rewrite the question
 	if not parsed.pron:
 		print(random.choice(UNKNOWN_QUESTION_ANSWERS))
-		continue
+		return
 		
 
 	# Keep asking for country name until a recognizable one is given or user
@@ -72,7 +72,7 @@ def ProcessQuestion():
 	# Go to next iteration to ask for next question
 	if abort_question: 
 		question_msg = "Ok, vamos mudar a pergunta." # probably temporary
-		continue
+		return
 	
 	print("[Debug]: Parsed question:\n")
 	print(parsed)
@@ -94,7 +94,7 @@ def ProcessQuestion():
 		print("Ainda não implementado")
 		# print(random.choice(NO_ANSWER))
 
-def StartChatbot():
+def StartChatbot(debug=False):
 	
 	name = Greet()
 	chatting = True
@@ -112,6 +112,13 @@ def StartChatbot():
 		print(question_msg)
 		question = input()
 		parsed = parse_question(question)
+
+		# This não é código obscurx :)
+		if question.lower() == "SAIR DESGRAÇA".lower():
+			if input("Você tem certeza que quer sair, {0}?".format(name)).lower() \
+				== " SIM CARALEO".lower():
+				print("Poxa, vou ficar triste :c")
+				break
 
 		# If no pronoun was found, we cant interpret the question, so asked user
 		# to rewrite the question
@@ -137,7 +144,7 @@ def StartChatbot():
 					("refazer" in _country and "pergunta" in _country):
 					abort_question = True
 
-		if _country == 'usa' or _country == 'eua':
+		if parsed.country == 'usa' or parsed.country == 'eua':
 			parse_question.country = 'estados unidos'
 
 		# Go to next iteration to ask for next question
@@ -145,9 +152,11 @@ def StartChatbot():
 			question_msg = "Ok, vamos mudar a pergunta." # probably temporary
 			continue
 		
-		print("[Debug]: Parsed question:\n")
-		print(parsed)
-		print()
+		if debug:
+			print("[Debug]: Parsed question:\n")
+			print(parsed)
+			print()
+
 		question_msg = "Próxima pergunta!" # probably temporary
 
 		#Topic and country memory will be used for more fluid and realistic chat
@@ -155,15 +164,13 @@ def StartChatbot():
 		country_mem = parsed.country
 
 		# Question was successfuly parsed, try to find the answer
-		# answer = find_answer()
-		answer = None
+		answer = get_answer(parsed)
 
 		if answer:
-			# print(compose_answer(question, answer))
-			pass
+			print(compose_answer(parsed, answer))
 		else:
-			print("Ainda não implementado")
-			# print(random.choice(NO_ANSWER))
+			# print("Ainda não implementado")
+			print(random.choice(NO_ANSWER))
 
 	# Say goodbye!
 	print(random.choice(FAREWELLS))

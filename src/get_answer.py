@@ -79,7 +79,7 @@ def _process_answer(ans):
 def remove_extra_whitespace(text):
 	# Regex for removing extra whitespaces if there is more than one
 	remove_whitespace_regex = re.compile(r"\\s+")
-	return re.sub(remove_whitespace_regex, r" ", tmp)
+	return re.sub(remove_whitespace_regex, r" ", text)
 	
 
 def separate_words(text):
@@ -109,7 +109,7 @@ def separate_words(text):
 	tmp = re.sub(final_regex, r"\1 \2", text)
 
 	# Remove extra whitespaces
-	result = re.sub(remove_whitespace_regex, r" ", tmp)
+	result = remove_extra_whitespace(tmp)
 	
 	return result
 

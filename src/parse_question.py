@@ -262,7 +262,8 @@ def parse_question(question, pron=None, country=None, model=pt_model):
 		
 
 	abbrvs = _find_abbreviations(doc)
-	topic = re.sub(country, "", _find_topic(doc))
+	topic = _find_topic(doc)
+	if country: topic = re.sub(country, "", topic)
 
 	return ParsedQuestion(question, pron, country, topic, core)
 

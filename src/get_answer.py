@@ -14,13 +14,15 @@ import sys
 import unicodedata
 import re
 
+
 from os import path, makedirs
 from datetime import datetime
 from itertools import permutations
-from http_utils import get_html, url_encode
 from bs4 import BeautifulSoup
+
+from http_utils import get_html, url_encode
 from ChatbotException import ChatbotException
-from parse_question import pt_model
+from parse_question import pt_model, text_canonicalize
 
 
 index_mundi_base_url = "https://indexmundi.com/pt/"
@@ -74,9 +76,13 @@ def _process_answer(ans):
 
 	return ans[start:end] if start < end else ans
 
-def separate_words(text):
+def remove_extra_whitespace(text):
 	# Regex for removing extra whitespaces if there is more than one
 	remove_whitespace_regex = re.compile(r"\\s+")
+	return re.sub(remove_whitespace_regex, r" ", tmp)
+	
+
+def separate_words(text):
 
 	# Regexes used to identify words that comes BEFORE the type of words we want to
 	# separate
@@ -127,7 +133,6 @@ def get_answer(parsed):
 			print("[Error]: Erro desconhecido. Mensagem: '{0}'".format(str(e)))
 
 	# Check if cached file exists
-	print(parsed)
 	try:
 		cache_file_path = cache_file_base.format(parsed.country.lower())
 	except AttributeError as e:
@@ -178,10 +183,15 @@ def get_answer(parsed):
 		_cache_webpage(infobox, cache_file_path)
 	
 	# Generate lowercase infobox for use in comparations
+	# TODO: use spacy idx 
 	infobox_ = re.sub(r"[-–−]", r"-", infobox.lower())
 	infobox_model = pt_model(infobox)
+	canon_infobox_model = pt_model(infobox)
 	unstoppable_infobox = " ".join([word.text for word in infobox_model if word.is_stop == False])
+	canon_unstoppable_infobox = " ".join([word.text for word in canon_infobox_model if word.is_stop == False])
 
+	# print(unstoppable_infobox, "\n\n", canon_unstoppable_infobox)
+	
 	ans = None
 
 	# Try searching for answer using question's core first, if no answer, search
@@ -198,8 +208,8 @@ def get_answer(parsed):
 		perm = permutations(parsed.topic.lower().split(" "))
 		for p in perm:
 			query = " ".join(p)
-			# print(query)
-			_, start, end = find_between(unstoppable_infobox.lower(), query, " - ")
+			# print(repr(query))
+			_, start, end = find_between(canon_unstoppable_infobox.lower(), query, " - ")
 			ans = unstoppable_infobox[start:end]
 			if ans: break
 

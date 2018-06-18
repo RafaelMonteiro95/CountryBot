@@ -176,6 +176,11 @@ if __name__ == "__main__":
 
 
 # Debug
+import spacy
+from parse_question import parse_question as pq
+from get_answer import get_answer
+from compose_answer import compose_answer as Ans
+
 def test(question):
 	res = pq(question)
 	ans = get_answer(res)

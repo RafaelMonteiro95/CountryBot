@@ -280,7 +280,7 @@ def text_canonicalize(question):
 	question = re.sub(regex[5], "y", question)
 	question = re.sub(regex[6], "c", question)
 	question = re.sub(regex[7], "n", question)
-	question = re.sub(regex[8], " ", question)
+	# question = re.sub(regex[8], " ", question)
 	question = re.sub(regex[9], " ", question)
 	return question
 

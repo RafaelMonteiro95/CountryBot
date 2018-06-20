@@ -7,25 +7,35 @@ from threading import Thread
 #This needs to be global so all message handlers can have access to the bot
 db = TinyDB('db.json')
 bot = telebot.TeleBot("534643979:AAFWymR8hBdtXZKiNzem7EcyiZxy_V5fWUM");
-users = []
 
 
 #this handler will execute once a user send a message to the bot with the command start i.e. "/start"
 @bot.message_handler(commands=['start'])
 def start_handler(message):
-	users.append(message.chat.id)
-	bot.send_message(message.chat.id, "Olá! Qual é o seu nome?")
-	db.insert({'id': message.chat.id, 'name': 'unnamed user', 'state': 'waiting_for_name'})
+	#if the user is already in the database:
+	if db.contains(where('id') == message.chat.id):
+		bot.send_message(message.chat.id, "Eu já te conheço! Se quiser ser esquecido, use o comando /forget")
+	else:
+		bot.send_message(message.chat.id, "Olá! Qual é o seu nome?")
+		db.insert({'id': message.chat.id, 'name': 'unnamed user', 'state': 'waiting_for_name'})
+
+
+#this handler will execute once a user send a message to the bot with the command forget i.e. "/forget"
+@bot.message_handler(commands=['forget'])
+def remove_handler(message):
+	db.remove(where('id') == message.chat.id)
+	bot.send_message(message.chat.id, "Ok, te esqueci")
 
 
 #this handler will execute once a user not in users list sends a message to the bot
-@bot.message_handler(func=lambda message: message.chat.id not in users)
+@bot.message_handler(func=lambda message: not db.contains(where('id') == message.chat.id))
 def unknown_user_handler(message):
+	# print(messa)
 	bot.send_message(message.chat.id, "Olá! Acho que ainda não te conheço. Envie /start para começarmos a conversar")
 
 
 #this handler will execute once a user in users list sends a message to the bot
-@bot.message_handler(func=lambda message: message.chat.id in users)
+@bot.message_handler(func=lambda message: db.contains(where('id') == message.chat.id))
 def known_user_handler(message):
 	#fetch user in database
 	user = db.get(where('id') == message.chat.id)
@@ -49,12 +59,6 @@ def main():
 
 	#loading users in database
 	#cleans the database
-	# db.purge()
-	print('Loading users...')
-	#loads all users id's in database to the 'users' list
-	users = [result['id'] for result in db.all()]
-	print(len(users), 'users in database')
-	print('users:',[result['name'] for result in db.all()])
 
 	#starting bot thread
 	#thread is in daemon mode so when the script ends the threads are terminated
@@ -63,10 +67,17 @@ def main():
 	thread.daemon = True
 	thread.start();
 
+
+	prevUsers = None
 	#now main is free to do whatever it likes
 	while True:
 		try:
 			time.sleep(1)
+			users = [result['name']+'['+str(result['id'])+']' for result in db.all()]
+			if users != prevUsers:
+				print('Current Users:')
+				print(users)
+				prevUsers = users
 			#here we can print stuff
 		except KeyboardInterrupt:
 			print("Stopping server...")

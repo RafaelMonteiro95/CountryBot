@@ -6,7 +6,7 @@ from threading import Thread
 #Creating a bot instance
 #This needs to be global so all message handlers can have access to the bot
 db = TinyDB('db.json')
-bot = telebot.TeleBot("433393733:AAHpM9DyRgTUp1UtNaM5ApO2TuvFQHzYMcE");
+bot = telebot.TeleBot("534643979:AAFWymR8hBdtXZKiNzem7EcyiZxy_V5fWUM");
 users = []
 
 

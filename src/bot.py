@@ -1,6 +1,6 @@
 import telebot
 import time
-from tinydb import TinyDB, Query, where
+from tinydb import TinyDB, where
 from threading import Thread
 
 #Creating a bot instance
@@ -56,10 +56,6 @@ def known_user_handler(message):
 
 
 def main():
-
-	#loading users in database
-	#cleans the database
-
 	#starting bot thread
 	#thread is in daemon mode so when the script ends the threads are terminated
 	#thread executes the bot.polling() function which fetchs for messages

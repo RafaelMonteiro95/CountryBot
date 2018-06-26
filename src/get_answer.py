@@ -30,13 +30,13 @@ cache_dir = "cache"
 cache_file_base = cache_dir + "/indexmundi-{0}-infobox"
 
 def _cache_webpage(content, filename):
-	file = open(filename, "w")
+	file = open(filename, "w", encoding="utf8")
 	file.write(content)
 	file.flush()
 	file.close()
 
 def _get_cached_webpage(filename):
-	file = open(filename, "r")
+	file = open(filename, "r", encoding="utf8")
 	content = file.read()
 	file.close()
 	return content
@@ -213,7 +213,9 @@ def get_answer(parsed):
 			ans = unstoppable_infobox[start:end]
 			if ans: break
 
-	if not ans: print("Coulndt find answer.")
+	if not ans:
+		return 'Topic not Found'
+
 	ans = _process_answer(re.sub(r"[-–−]", r"-", ans))
 
 	return ans.strip()

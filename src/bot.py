@@ -78,6 +78,7 @@ def known_user_handler(message):
 
 	#if bot was waiting for user to ask a question
 	elif user['state'] == 'waiting_for_question':
+		using_last_question = False
 		#parsing user question
 		parsed = parse_question(message.text.strip())
 
@@ -95,45 +96,60 @@ def known_user_handler(message):
 		if res == 'Country not Found':
 			print('bot: Country not Found for user {0}'.format(user['name']))
 			#Topic not found, search for user last question
-			last_parsed = user['last_question']
-			#Assigns last question topic to this question
-			parsed.country = last_parsed['country']
-			#try parsing again
+			#Try-Catch block because user might not have a last question assigned
 			try:
-				res = get_answer(parsed)
-			except Exception as e:
-				print('bot: {0}'.format(e))
-				res = None
-			if res == 'Topic not Found':
-				#No topic: cannot answer this question
+				using_last_question = True
+				last_parsed = user['last_question']
+				#Assigns last question topic to this question
+				parsed.country = last_parsed['country']
+				#try parsing again
+				try:
+					res = get_answer(parsed)
+				except Exception as e:
+					print('bot: {0}'.format(e))
+					res = None
+				if res == 'Topic not Found':
+					#No topic: cannot answer this question
+					res = None
+			except KeyError:
 				res = None
 
 		elif res == 'Topic not Found':
 			print('bot: Topic not Found for user {0}'.format(user['name']))
 			#Topic not found, search for user last question
-			last_parsed = user['last_question']
-			#Assigns last question topic to this question
-			parsed.topic = last_parsed['topic']
-			#try parsing again
+			#Try-Catch block because user might not have a last question assigned
 			try:
-				res = get_answer(parsed)
-			except ChatbotException as e:
-				#No country: cannot answer this question
-				res = None
-			except Exception as e:
-				print('bot: {0}'.format(e))
+				using_last_question = True
+				last_parsed = user['last_question']
+				#Assigns last question topic to this question
+				parsed.topic = last_parsed['topic']
+				#try parsing again
+				try:
+					res = get_answer(parsed)
+				except ChatbotException as e:
+					#No country: cannot answer this question
+					res = None
+				except Exception as e:
+					print('bot: {0}'.format(e))
+					res = None
+			except KeyError:
 				res = None
 
 		if res:
 			#generating answer for user question
 			answer = compose_answer(parsed, res)
 			print('bot: Sucessful answer for user {0}!'.format(user['name']))
+			print('bot: Question was: {0}!'.format(parsed.question))
+			print('bot: Answer was: {0}!'.format(res))
 			#saving this question for future uses
 			db.update({'last_question': parsed}, where('id') == user['id'])
 		else:
 			print('bot: Unsucessful answer for user {0}.'.format(user['name']))
 			print('bot: Parsed Question:', parsed)
-			print('bot: Last Question:', user['last_question'])
+			try:
+				print('bot: Last Question:', user['last_question'])
+			except KeyError:
+				print('bot: User didn\'t had a Last Question')
 			answer = 'Não consegui encontrar uma resposta.'
 
 		#Sending answer to user

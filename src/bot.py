@@ -155,12 +155,20 @@ def known_user_handler(message):
 		#Sending answer to user
 		bot.send_message(user['id'], answer)
 
+def botPolling():
+	while(True):
+		try:
+			bot.polling()
+		except Exception as e:
+			print(e)
+			time.sleep(15)
+
 
 def main():
 	#starting bot thread
 	#thread is in daemon mode so when the script ends the thread is terminated
 	#thread executes the bot.polling() function which fetchs for messages
-	thread = Thread(target=bot.polling,args=())
+	thread = Thread(target=botPolling,args=())
 	thread.daemon = True
 	thread.start();
 

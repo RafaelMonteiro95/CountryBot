@@ -16,11 +16,14 @@ from get_answer import get_answer
 from compose_answer import compose_answer
 from ChatbotException import ChatbotException
 
-### Telegram Bot Imports
+### Telegram Bot imports
 import telebot
 import time
 from tinydb import TinyDB, where
 from threading import Thread
+
+### File managing, etc imports
+import os
 
 #Creating a bot instance
 #This needs to be global so all message handlers can have access to the bot
@@ -76,11 +79,20 @@ def known_user_handler(message):
 		#sends answer as a message to user 
 		bot.send_message(user['id'], answer)
 
+
 	#if bot was waiting for user to ask a question
 	elif user['state'] == 'waiting_for_question':
 		using_last_question = False
+
+		#opening a file to store the conversation
+		conv = open('conversations/{0}.txt'.format(user['id']), 'a', encoding = 'utf-8')
+		#saving question
+		print('Question: ',message.text.strip(),file=conv)
+
 		#parsing user question
 		parsed = parse_question(message.text.strip())
+		#saving parsed question
+		print('Parsed:', parsed, sep='', file=conv)
 
 		#searching for an answer based on parsed question
 		try:
@@ -89,67 +101,78 @@ def known_user_handler(message):
 			#This exception occurs when the parsing does not finds the country
 			res = 'Country not Found'
 		except Exception as e:
-			print('bot: {0}'.format(e))
+			#If anything weird happens, this exception is handled
+			print('bot: Unknown exception found when parsing answer')
+			#saving the exception code to a log .txt file
+			with open('logs/{0}.txt'.format(user['id']), encoding='utf-8') as log:
+				print(e,file=log) 
 			res = None
 
 		#processing answer found
 		if res == 'Country not Found':
 			print('bot: Country not Found for user {0}'.format(user['name']))
+			print('Country not found',file=conv)
 			#Topic not found, search for user last question
 			#Try-Catch block because user might not have a last question assigned
 			try:
-				using_last_question = True
 				last_parsed = user['last_question']
+				using_last_question = True
 				#Assigns last question topic to this question
+				print('Using previous question country:',last_parsed['country'], file=conv)
 				parsed.country = last_parsed['country']
 				#try parsing again
 				try:
 					res = get_answer(parsed)
 				except Exception as e:
-					print('bot: {0}'.format(e))
+					print('bot: Unknown exception found when parsing previous answer when country was not found')
+					#saving the exception code to a log .txt file
+					with open('logs/{0}.txt'.format(user['id']), encoding='utf-8') as log:
+						print(e,file=log) 
 					res = None
 				if res == 'Topic not Found':
+					print('Topic not found, this question cannot be answered (no topic, no country)', file=conv)
 					#No topic: cannot answer this question
 					res = None
 			except KeyError:
+				print('User has no previous question.',last_parsed['country'], file=conv)
 				res = None
 
 		elif res == 'Topic not Found':
 			print('bot: Topic not Found for user {0}'.format(user['name']))
+			print('Topic not found',file=conv)
 			#Topic not found, search for user last question
 			#Try-Catch block because user might not have a last question assigned
 			try:
-				using_last_question = True
 				last_parsed = user['last_question']
+				using_last_question = True
 				#Assigns last question topic to this question
+				print('Using previous question topic:',last_parsed['topic'], file=conv)
 				parsed.topic = last_parsed['topic']
 				#try parsing again
 				try:
 					res = get_answer(parsed)
 				except ChatbotException as e:
 					#No country: cannot answer this question
+					print('Country not found, this question cannot be answered (no topic, no country)', file=conv)
 					res = None
 				except Exception as e:
-					print('bot: {0}'.format(e))
+					print('bot: Unknown exception found when parsing previous answer when topic was not found')
+					#saving the exception code to a log .txt file
+					with open('logs/{0}.txt'.format(user['id']), encoding='utf-8') as log:
+						print(e,file=log) 
 					res = None
 			except KeyError:
+				print('User has no previous question.',last_parsed['country'], file=conv)
 				res = None
 
 		if res:
 			#generating answer for user question
 			answer = compose_answer(parsed, res)
-			print('bot: Sucessful answer for user {0}!'.format(user['name']))
-			print('bot: Question was: {0}!'.format(parsed.question))
-			print('bot: Answer was: {0}!'.format(res))
+			print('Answer:', answer, file=conv)
 			#saving this question for future uses
 			db.update({'last_question': parsed}, where('id') == user['id'])
 		else:
-			print('bot: Unsucessful answer for user {0}.'.format(user['name']))
-			print('bot: Parsed Question:', parsed)
-			try:
-				print('bot: Last Question:', user['last_question'])
-			except KeyError:
-				print('bot: User didn\'t had a Last Question')
+			print('Could not answer question', file=conv)
 			answer = 'Não consegui encontrar uma resposta.'
 
 		#Sending answer to user
@@ -157,13 +180,16 @@ def known_user_handler(message):
 
 
 def main():
+	print('creating conversations folder')
+	os.makedirs('conversations', exist_ok=True)
+	os.makedirs('logs', exist_ok=True)
+
 	#starting bot thread
 	#thread is in daemon mode so when the script ends the thread is terminated
 	#thread executes the bot.polling() function which fetchs for messages
 	thread = Thread(target=bot.polling,args=())
 	thread.daemon = True
 	thread.start();
-
 
 	#now main is free to do whatever it likes
 	prevUsers = None

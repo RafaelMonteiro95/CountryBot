@@ -86,13 +86,10 @@ def known_user_handler(message):
 
 		#opening a file to store the conversation
 		conv = open('conversations/{0}.txt'.format(user['id']), 'a', encoding = 'utf-8')
-		#saving question
-		print('Question: ',message.text.strip(),file=conv)
-
 		#parsing user question
 		parsed = parse_question(message.text.strip())
 		#saving parsed question
-		print('Parsed:', parsed, sep='', file=conv)
+		print(parsed, file=conv)
 
 		#searching for an answer based on parsed question
 		try:
@@ -168,11 +165,11 @@ def known_user_handler(message):
 		if res:
 			#generating answer for user question
 			answer = compose_answer(parsed, res)
-			print('Answer:', answer, file=conv)
+			print('Answer:', answer, end='\n\n', file=conv)
 			#saving this question for future uses
 			db.update({'last_question': parsed}, where('id') == user['id'])
 		else:
-			print('Could not answer question', file=conv)
+			print('Could not answer question', end='\n\n', file=conv)
 			answer = 'Não consegui encontrar uma resposta.'
 
 		#Sending answer to user

@@ -29,6 +29,7 @@ import os
 #This needs to be global so all message handlers can have access to the bot
 db = TinyDB('db.json')
 bot = telebot.TeleBot("534643979:AAFWymR8hBdtXZKiNzem7EcyiZxy_V5fWUM");
+version = '1'
 
 
 #this handler will execute once a user send a message to the bot with the command start i.e. "/start"
@@ -85,7 +86,7 @@ def known_user_handler(message):
 		using_last_question = False
 
 		#opening a file to store the conversation
-		conv = open('conversations/{0}.txt'.format(user['id']), 'a', encoding = 'utf-8')
+		conv = open('conversations/{0}-{1}.txt'.format(user['id'],version), 'a', encoding = 'utf-8')
 		#parsing user question
 		parsed = parse_question(message.text.strip())
 		#saving parsed question

@@ -160,7 +160,7 @@ def botPolling():
 		try:
 			bot.polling()
 		except Exception as e:
-			print(e)
+			print('timeout')
 			time.sleep(15)
 
 

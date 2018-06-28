@@ -52,8 +52,7 @@ def remove_handler(message):
 
 #this handler will execute once a user send a message to the bot with the command forget i.e. "/ping"
 @bot.message_handler(commands=['ping'])
-@bot.message_handler(func=lambda m: m.text.strip().lower() == 'ping')
-def remove_handler(message):
+def ping_handler(message):
 	bot.send_message(message.chat.id, "pong")
 	bot.send_video(message.chat.id, "https://i.imgur.com/ygVyp9N.gif")
 
@@ -179,14 +178,14 @@ def known_user_handler(message):
 def botPolling():
 	while(True):
 		try:
-			bot.polling()
+			bot.polling(none_stop=True)
 		except Exception as e:
 			print(e)
 			time.sleep(15)
 
 
 def main():
-	print('creating conversations folder')
+	print('creating conversations and log folder')
 	os.makedirs('conversations', exist_ok=True)
 	os.makedirs('logs', exist_ok=True)
 

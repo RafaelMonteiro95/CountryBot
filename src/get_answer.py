@@ -121,7 +121,7 @@ def find_between(s, first, last):
     except ValueError:
         return "", 0, 0
 
-def get_answer(parsed, as_text=True, debug=False):
+def get_answer(parsed, as_text=False, debug=False):
 
 	# If cache directory doesnt exists, create it
 	if not path.isdir(cache_dir): 
@@ -159,7 +159,7 @@ def get_answer(parsed, as_text=True, debug=False):
 			
 			if as_text: infobox = _get_cached_webpage(cache_file_path)
 			else: 
-				html = _get_cached_webpage(cache_file_path)
+				html = _get_cached_webpage(cache_file_path + "-html")
 				infobox = BeautifulSoup(html, "html.parser")
 
 			if debug: print("[Info] Página encontrada no cache")
@@ -201,7 +201,7 @@ def get_answer(parsed, as_text=True, debug=False):
 		else:
 			if debug: print("[Info] Salvando página como html")
 			infobox_text = infobox.decode_contents()
-			_cache_webpage(infobox_text, cache_file_path)
+			_cache_webpage(infobox_text, cache_file_path + "-html")
 	
 
 	# If we are working with pure text (clear html, other source of info, text)

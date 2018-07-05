@@ -29,7 +29,7 @@ import os
 #This needs to be global so all message handlers can have access to the bot
 db = TinyDB('db.json')
 bot = telebot.TeleBot("534643979:AAFWymR8hBdtXZKiNzem7EcyiZxy_V5fWUM");
-version = '1'
+version = '2 - structured html'
 
 
 #this handler will execute once a user send a message to the bot with the command start i.e. "/start"

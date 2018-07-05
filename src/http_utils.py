@@ -67,6 +67,7 @@ def get_browser_with_url(url, timeout=120, driver="firefox"):
 
 def write_html_to_file(html, filename):
     of = open(filename, "w")
+
     of.write(html)
     # of.flush()
     of.close()

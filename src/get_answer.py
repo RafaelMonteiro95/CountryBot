@@ -121,10 +121,13 @@ def find_between(s, first, last):
     except ValueError:
         return "", 0, 0
 
-def get_answer(parsed):
+def get_answer(parsed, as_text=True, debug=False):
 
 	# If cache directory doesnt exists, create it
 	if not path.isdir(cache_dir): 
+
+		if debug: print("[Info] Diretório de cache não existe, criando um")
+
 		try:
 			makedirs(cache_dir)
 		except OSError as e:
@@ -151,12 +154,22 @@ def get_answer(parsed):
 		if diff.days > 0:
 			cache_need_update = True
 		else: 
+			
 			cache_need_update = False
-			infobox = _get_cached_webpage(cache_file_path)
+			
+			if as_text: infobox = _get_cached_webpage(cache_file_path)
+			else: 
+				html = _get_cached_webpage(cache_file_path)
+				infobox = BeautifulSoup(html, "html.parser")
+
+			if debug: print("[Info] Página encontrada no cache")
+
 	
 	# No cache or cache needs update, download file
 	if cache_need_update:
 		
+		if debug: print("[Info] Atualizando cache de " + parsed.country)
+
 		# Create url for indexmundi
 		country = url_encode(parsed.country)
 		url = index_mundi_base_url + country
@@ -177,45 +190,91 @@ def get_answer(parsed):
 
 		# Pre-process infobox text
 		# IMPORTANT: NÃO REMOVER O K DA NORMALIZAÇÃO!!!!!! VAI CAGAR TUDO, PARECE UMA BOA IDEIA NA HORA, MAS DEPOIS VAI SER PIOR!
-		infobox = unicodedata.normalize("NFKC", infobox.text)
-		infobox = separate_words(infobox)
-		# infobox = re.sub(r"\n", r" ", infobox.lower())
-		_cache_webpage(infobox, cache_file_path)
+		if as_text:
+			
+			if debug: print("[Info] Salvando página como texto puro")
+
+			infobox = unicodedata.normalize("NFKC", infobox.text)
+			infobox = separate_words(infobox)
+			# infobox = re.sub(r"\n", r" ", infobox.lower())
+			_cache_webpage(infobox, cache_file_path)
+		else:
+			if debug: print("[Info] Salvando página como html")
+			infobox_text = infobox.decode_contents()
+			_cache_webpage(infobox_text, cache_file_path)
 	
-	# Generate lowercase infobox for use in comparations
-	# TODO: use spacy idx 
-	infobox_ = re.sub(r"[-–−]", r"-", infobox.lower())
-	infobox_model = pt_model(infobox)
-	canon_infobox_model = pt_model(infobox)
-	unstoppable_infobox = " ".join([word.text for word in infobox_model if word.is_stop == False])
-	canon_unstoppable_infobox = " ".join([word.text for word in canon_infobox_model if word.is_stop == False])
 
-	# print(unstoppable_infobox, "\n\n", canon_unstoppable_infobox)
+	# If we are working with pure text (clear html, other source of info, text)
+	# cache, etc
+	if as_text:
+		# Generate lowercase infobox for use in comparations
+		# TODO: use spacy idx 
+		infobox_ = re.sub(r"[-–−]", r"-", infobox.lower())
+		infobox_model = pt_model(infobox)
+		canon_infobox_model = pt_model(infobox)
+		unstoppable_infobox = " ".join([word.text for word in infobox_model if word.is_stop == False])
+		canon_unstoppable_infobox = " ".join([word.text for word in canon_infobox_model if word.is_stop == False])
+
+		# print(unstoppable_infobox, "\n\n", canon_unstoppable_infobox)
 	
-	ans = None
+		ans = None
+		# Try searching for answer using question's core first, if no answer, search
+		# using topic.
+		# IMPORTANT: this isnt working and i dunno why, halp
+		# if parsed.core in infobox:
+		# 	_, start, end = find_between(infobox_, parsed.core.lower(), " - ")
+		# 	# Get everything between - blahblah - and assume its the correct answer
+		# 	# TODO: clean answer
+		# 	ans = infobox[start:end]
 
-	# Try searching for answer using question's core first, if no answer, search
-	# using topic.
-	# IMPORTANT: this isnt working and i dunno why, halp
-	# if parsed.core in infobox:
-	# 	_, start, end = find_between(infobox_, parsed.core.lower(), " - ")
-	# 	# Get everything between - blahblah - and assume its the correct answer
-	# 	# TODO: clean answer
-	# 	ans = infobox[start:end]
+		# No answer found with core, search with topic
+		if not ans and parsed.topic:
+			perm = permutations(parsed.topic.lower().split(" "))
+			for p in perm:
+				query = " ".join(p)
+				# print(repr(query))
+				_, start, end = find_between(canon_unstoppable_infobox.lower(), query, " - ")
+				ans = unstoppable_infobox[start:end]
+				if ans: break
 
-	# No answer found with core, search with topic
-	if not ans and parsed.topic:
-		perm = permutations(parsed.topic.lower().split(" "))
-		for p in perm:
-			query = " ".join(p)
-			# print(repr(query))
-			_, start, end = find_between(canon_unstoppable_infobox.lower(), query, " - ")
-			ans = unstoppable_infobox[start:end]
-			if ans: break
+		if not ans:
+			return 'Topic not Found'
 
-	if not ans:
+		ans = _process_answer(re.sub(r"[-–−]", r"-", ans))
+		return ans.strip()
+
+	# If we are working with raw html (structured data)
+	else:
+		
+		old_cell = None
+		topic_found = False
+		
+		for child in infobox.children:
+			cells = child.findAll("td")
+
+			for cell in cells:
+				
+				if debug: 
+					print()
+					print(cell.prettify())
+					print()
+
+				# Topic found in previous cell, try to find answer here
+				if topic_found:
+					ans = cell.text
+					ans = _process_answer(re.sub(r"[-–−]", r"-", ans))
+					return ans
+
+				topic_found = False
+				if parsed.topic.lower() in cell.text.lower():
+					topic_found = True
+					old_cell = cell
+					print(cell.prettify())
+					print("[Info] Topic found in this cell, answer may be in the next.")
+				
+				if debug: 
+					print("Topic found? " + str(topic_found))
+					input("Press anything to continue...")
+
 		return 'Topic not Found'
 
-	ans = _process_answer(re.sub(r"[-–−]", r"-", ans))
-
-	return ans.strip()
